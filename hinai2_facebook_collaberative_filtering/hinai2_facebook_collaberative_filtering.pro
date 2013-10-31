@@ -11,8 +11,18 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    fbgraph_parser.cpp \
+    person.cpp \
+    product.cpp \
+    post.cpp \
+    comment.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    fbgraph_parser.h \
+    person.h \
+    product.h \
+    post.h \
+    comment.h
 
 FORMS    += mainwindow.ui
