@@ -16,13 +16,15 @@ SOURCES += main.cpp\
     person.cpp \
     product.cpp \
     post.cpp \
-    comment.cpp
+    comment.cpp \
+    networkmanager.cpp
 
 HEADERS  += mainwindow.h \
     fbgraph_parser.h \
     person.h \
     product.h \
     post.h \
-    comment.h
+    comment.h \
+    networkmanager.h
 
 FORMS    += mainwindow.ui

@@ -2,6 +2,7 @@
 
 #include <QFile>
 #include <QMessageBox>
+#include <QVariantMap>
 
 FBGraph_Parser::FBGraph_Parser()
 {
@@ -29,5 +30,9 @@ bool FBGraph_Parser::parseFile(std::string file)
 
 bool FBGraph_Parser::parse(QByteArray *data)
 {
+    //Parse Json into QVariant
+    bool ok;
+    //QVariantMap data = parser.parse(rawdata, &ok).toMap();
 
+    //Go through and get Posts, Comments and likes
 }

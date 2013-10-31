@@ -4,6 +4,8 @@
 #include <QString>
 #include <QDate>
 
+class Person;
+
 class Post
 {
 public:
@@ -14,6 +16,9 @@ public:
 
     //Get the posting date
     QDate& getDate();
+
+    //Get a list of people who liked this post
+    QList<Person*>& getLiked();
 
 };
 
