@@ -38,10 +38,12 @@ void CollaberativeFiltering::writeToDebug()
     {
         for(int j = 0; j < nrProducts; j++)
         {
-             output += QString::number(groupProductVotes[i][j]) + " ";
+            output += QString::number(groupProductVotes[i][j]) + " ";
         }
         output += QString::number(groupSum[i]) + " " + QString::number(groupMean[i]) +  "\n";
     }
+
+    output += "Group male likes fifa 14 this much: " +  QString::number(predictVote(1,fifa_14));
 
     qDebug() << output;
 }
@@ -103,6 +105,8 @@ double CollaberativeFiltering::predictVote(int activeGroup, int product)
     }
 
     double predict =  groupMean[activeGroup] + k * sum;
+
+    return predict;
 }
 
 double CollaberativeFiltering::calculatePearsonCorrelationCoefficient(int activeGroup, int groups)
@@ -116,7 +120,8 @@ double CollaberativeFiltering::calculatePearsonCorrelationCoefficient(int active
         nominator += (groupProductVotes[activeGroup][j] - groupMean[activeGroup]) *(groupProductVotes[groups][j] - groupMean[groups])  ;
         denominator +=  std::pow(groupProductVotes[activeGroup][j] - groupMean[activeGroup],2) * std::pow(groupProductVotes[groups][j] - groupMean[groups],2);
     }
-    weight = nominator/std::sqrt(denominator);
+    if(denominator>0)
+        weight = nominator/std::sqrt(denominator);
 
     return weight;
 }
