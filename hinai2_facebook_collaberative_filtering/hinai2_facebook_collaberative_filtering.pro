@@ -17,7 +17,8 @@ SOURCES += main.cpp\
     product.cpp \
     post.cpp \
     comment.cpp \
-    networkmanager.cpp
+    networkmanager.cpp \
+    collaberativefiltering.cpp
 
 HEADERS  += mainwindow.h \
     fbgraph_parser.h \
@@ -25,6 +26,7 @@ HEADERS  += mainwindow.h \
     product.h \
     post.h \
     comment.h \
-    networkmanager.h
+    networkmanager.h \
+    collaberativefiltering.h
 
 FORMS    += mainwindow.ui
