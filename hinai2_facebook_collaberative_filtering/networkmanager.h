@@ -20,6 +20,10 @@ public:
     //Add a request job
     void addGetGraphJob(QString query, QString store);
 
+    // Add a request to download a specified webpage.
+    void addGetPageJob(QString url);
+    void addGetFacebookAboutPersonPage(QString fbUsername);
+
     //Do a normal http get request(Used for pagination and pulling people)
     void addGetJob(QString url);
 
@@ -33,6 +37,7 @@ protected:
     QNetworkAccessManager *nam;
     QString token;
     FBGraph_Parser* parser;
+
 };
 
 #endif // NETWORKMANAGER_H

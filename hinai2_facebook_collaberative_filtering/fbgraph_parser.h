@@ -21,6 +21,7 @@ public:
 
     bool parseFile(std::string file); //Parse a file
     bool parse(QByteArray& rawdata); //Parse raw data
+    bool parsePerson(QByteArray& rawData);
 
     //Add product
     void addProduct(QString name, QString keywords[]);

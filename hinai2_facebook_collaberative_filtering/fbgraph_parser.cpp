@@ -121,6 +121,11 @@ bool FBGraph_Parser::parse(QByteArray& rawdata)
         qDebug() << "No next page found";
 }
 
+bool FBGraph_Parser::parsePerson(QByteArray &rawData)
+{
+  return false;
+}
+
 void FBGraph_Parser::addProduct(QString name, QString keywords[])
 {
     Product* product = NULL;
