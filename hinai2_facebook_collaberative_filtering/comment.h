@@ -8,9 +8,11 @@ class Person;
 class Comment : public Post
 {
 public:
-    Comment();
+    Comment(QString id, QString msg, QString date);
 
     Person* getPoster();
+
+protected:
 };
 
 #endif // COMMENT_H

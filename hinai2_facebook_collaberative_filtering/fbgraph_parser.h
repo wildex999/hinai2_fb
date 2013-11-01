@@ -23,6 +23,11 @@ public:
     bool parse(QByteArray& rawdata); //Parse raw data
     bool parsePerson(QByteArray& rawData);
 
+    //Parse posts, comments and their likes
+    bool parsePosts(QList<QVariant>& posts);
+    bool parseComments(Post* post, QList<QVariant>& comments);
+    bool parseLikes(QList<QVariant>& people);
+
     //Add product
     void addProduct(QString name, QString keywords[]);
 
@@ -46,6 +51,8 @@ protected:
 
     QJson::Parser parser;
     NetworkManager* networkmanager;
+
+    int pages;
 
 };
 

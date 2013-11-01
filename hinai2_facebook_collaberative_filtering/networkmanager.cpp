@@ -23,7 +23,8 @@ NetworkManager::~NetworkManager()
 void NetworkManager::addGetGraphJob(QString query, QString store)
 {
     QString requestUrl = "https://graph.facebook.com/" + store + "?access_token=";
-    nam->get(QNetworkRequest(QUrl(requestUrl + token + query)));
+    QNetworkRequest request(QUrl(requestUrl + token + query));
+    nam->get(request);
 }
 
 void NetworkManager::addGetPageJob(QString url)
