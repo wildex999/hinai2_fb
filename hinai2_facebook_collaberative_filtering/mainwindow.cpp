@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <string>
+
 
 #include "networkmanager.h"
 #include "collaberativefiltering.h"
@@ -18,7 +20,6 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-
     // ================== OBS OBS ====================
     // Pass på at datafila "Fylke_og_kommuneoversikt.csv" ligger i build mappa du bruker.
     // Fila ligger i src mappa. Må kopiere den over manuelt.
@@ -29,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
     locationTable = new LocationTable(Util::ExtractLocationsFromCVSFile("Fylke_og_kommuneoversikt.csv"));
 
     FBGraph_Parser* parser = new FBGraph_Parser(locationTable);
+
     NetworkManager* net = new NetworkManager(this, parser);
     parser->setNetworkManager(net);
 
@@ -45,13 +47,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     
-    CollaberativeFiltering cf;
-    cf.addToTable(male,ipad_air);
-    cf.addToTable(male,assasins_creed_4);
-    cf.addToTable(male,ipad_mini);
-    cf.addToTable(male,ipad_mini);
-    cf.addToTable(male,ipad_mini);
-    cf.addToTable(age30_40,microsoft_surface_rt_64_gb);
+
+//    cf.addToTable(male,ipad_air);
+//    cf.addToTable(male,assasins_creed_4);
+//    cf.addToTable(male,ipad_mini);
+//    cf.addToTable(male,ipad_mini);
+//    cf.addToTable(male,ipad_mini);
+//    cf.addToTable(age30_40,microsoft_surface_rt_64_gb);
+
+    cf.generateRandomData();
 
     cf.makeCalculations();
 
@@ -63,4 +67,52 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete locationTable;
+}
+
+void MainWindow::convertPersonToGroup(Person person, QList< GROUP>& groups)
+{
+//    if(compare(person.getGender(),'male') == 0)
+//        groups.append(male);
+//    else if(std::compare(person.getGender(),'female') == 0)
+//        groups.append(female);
+//    //    else
+//    //        groups.append();
+
+//    if(person.getAge() < 20)
+//        groups.append(age14_20);
+//    else if(person.getAge() < 30)
+//        groups.append(age20_30);
+//    else if(person.getAge() < 40)
+//        groups.append(age30_40);
+//    else if(person.getAge() < 50)
+//        groups.append(age40_50);
+//    else if(person.getAge() < 60)
+//        groups.append(age50_60);
+//    else
+//        groups.append(age70_pluss);
+
+//    if(std::compare(person.getPlace(),'ostlandet') == 0)
+//        groups.append(ostlandet);
+//    else if (std::compare(person.getPlace(),'sorlandet') == 0)
+//        groups.append(sorlandet);
+//    else if (std::compare(person.getPlace(),'trondelage') == 0)
+//        groups.append(trondelag);
+//    else if (std::compare(person.getPlace(),'vestlandet') == 0)
+//        groups.append(vestlandet);
+//    else if (std::compare(person.getPlace(),'nord_norge') == 0)
+//        groups.append(nord_norge);
+//    else if (std::compare(person.getPlace(),'utlandet') == 0)
+//        groups.append(utlandet);
+
+}
+
+void MainWindow::addPersonWithProducts(Person person)
+{
+//    QList<GROUP> groups;
+//    QList<PRODUCT> products;
+//    convertPersonToGroup(person, groups);
+//    for(int i = 0; i < groups.count(); i++)
+//        for(int j = 0; j < products.count(); j++)
+//            cf.addToTable(groups[i],products[j]);
+
 }

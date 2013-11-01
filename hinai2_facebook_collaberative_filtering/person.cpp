@@ -23,3 +23,18 @@ void Person::setGender(Gender gender)
 {
     this->gender = gender;
 }
+
+
+
+void Person::findAge(QDateTime birthdate)
+{
+    QDateTime today = QDateTime::currentDateTime();
+    age = today.date().year() - birthdate.date().year();
+    if( birthdate > today.addYears(-age)) age--;
+}
+
+
+void Person::findPlace(QString localPlace)
+{
+}
+

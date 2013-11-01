@@ -4,6 +4,7 @@
 
 CollaberativeFiltering::CollaberativeFiltering()
 {
+    srand (time(NULL));
     nrGroups = 14;
     nrProducts = 8;
 
@@ -43,7 +44,9 @@ void CollaberativeFiltering::writeToDebug()
         output += QString::number(groupSum[i]) + " " + QString::number(groupMean[i]) +  "\n";
     }
 
-    output += "Group male likes fifa 14 this much: " +  QString::number(predictVote(1,fifa_14));
+    double error = std::fabs((predictVote(male,fifa_14) - groupProductVotes[male][fifa_14]) / (2*(predictVote(male,fifa_14) + groupProductVotes[male][fifa_14]))) * 100;
+
+    output += "Group male likes fifa 14 this much: " +  QString::number(predictVote(male,fifa_14)) + " real value: " + QString::number(groupProductVotes[male][fifa_14]) + " difference: " + QString::number(error) + "%" ;
 
     qDebug() << output;
 }
@@ -52,6 +55,20 @@ void CollaberativeFiltering::makeCalculations()
 {
     calculateGroupSums();
     calculateGroupMean();
+}
+
+void CollaberativeFiltering::generateRandomData()
+{
+    for(int i = 0; i < nrGroups; i++)
+    {
+        for(int j = 0; j < nrProducts; j++)
+        {
+            double rnd = rand() % 100;
+            groupProductVotes[i][j] = rnd;
+        }
+    }
+
+//    groupProductVotes[male][fifa_14] = 0;
 }
 
 void CollaberativeFiltering::calculateGroupSums()
@@ -97,14 +114,18 @@ void CollaberativeFiltering::calculateGroupMean()
 
 double CollaberativeFiltering::predictVote(int activeGroup, int product)
 {
-    double k = 0.2;
+    double k = 1.0;
     double sum = 0.0;
+    double weightSum = 0.0;
     for(int i = 0; i < nrGroups; i++)
     {
-        sum += calculatePearsonCorrelationCoefficient(activeGroup, i)*(groupProductVotes[i][product] - groupMean[i]);
+        double group = groupProductVotes[i][product] - groupMean[i];
+        double coefficent = calculatePearsonCorrelationCoefficient(activeGroup, i);
+        sum += coefficent*group;
+        weightSum += std::fabs(coefficent);
     }
 
-    double predict =  groupMean[activeGroup] + k * sum;
+    double predict =  groupMean[activeGroup] + k * sum / weightSum;
 
     return predict;
 }
@@ -117,12 +138,16 @@ double CollaberativeFiltering::calculatePearsonCorrelationCoefficient(int active
     double denominator = 0.0;
     for(int j = 0; j < nrProducts; j++)
     {
-        nominator += (groupProductVotes[activeGroup][j] - groupMean[activeGroup]) *(groupProductVotes[groups][j] - groupMean[groups])  ;
-        denominator +=  std::pow(groupProductVotes[activeGroup][j] - groupMean[activeGroup],2) * std::pow(groupProductVotes[groups][j] - groupMean[groups],2);
+        double active = groupProductVotes[activeGroup][j] - groupMean[activeGroup];
+        double group = groupProductVotes[groups][j] - groupMean[groups];
+
+        nominator += active *group  ;
+        denominator +=  std::sqrt(active*active) * std::sqrt(group*group);
     }
     if(denominator>0)
-        weight = nominator/std::sqrt(denominator);
+        weight = nominator/denominator;
 
+    qDebug() << QString::number(weight);
     return weight;
 }
 

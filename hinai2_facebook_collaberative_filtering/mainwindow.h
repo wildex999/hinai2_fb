@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "collaberativefiltering.h"
+#include "person.h"
 
 namespace Ui {
         class MainWindow;
@@ -17,6 +19,9 @@ public:
     
 private:
     Ui::MainWindow *ui;
+    CollaberativeFiltering cf;
+    void            convertPersonToGroup(Person person, QList< GROUP>& groups);
+    void            addPersonWithProducts(Person person);
 };
 
 #endif // MAINWINDOW_H

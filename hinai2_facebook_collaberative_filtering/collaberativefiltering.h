@@ -51,6 +51,7 @@ class CollaberativeFiltering
     void                writeToDebug();
 
     void                makeCalculations();
+    void                generateRandomData();
 
 
     private:
