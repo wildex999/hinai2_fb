@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 
 TARGET = hinai2_facebook_collaberative_filtering
 TEMPLATE = app
@@ -30,3 +30,5 @@ HEADERS  += mainwindow.h \
     collaberativefiltering.h
 
 FORMS    += mainwindow.ui
+
+LIBS += -lqjson

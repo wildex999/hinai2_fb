@@ -1,4 +1,5 @@
 #Ignore user files from QtCreator
 *.pro.user
+*.pro.user*
 *~
 *.o

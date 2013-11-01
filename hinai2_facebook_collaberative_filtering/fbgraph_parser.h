@@ -8,17 +8,22 @@
 
 class Product;
 class Person;
+class Post;
+class NetworkManager;
 
 class FBGraph_Parser
 {
 public:
     FBGraph_Parser();
 
-    //Add a keyboard to watch when parsing(Pair, <Search word, stored name>)
-    void addWatchKeyword(std::pair<QString, QString>& keyword);
+    //Set the network manager to use when requesting further info
+    void setNetworkManager(NetworkManager* nm);
 
     bool parseFile(std::string file); //Parse a file
-    bool parse(QByteArray* data); //Parse raw data
+    bool parse(QByteArray& rawdata); //Parse raw data
+
+    //Add product
+    void addProduct(QString name, QString keywords[]);
 
     //Get a hash map of People
     QHash<QString, Person*>& getPeople();
@@ -27,9 +32,19 @@ public:
     QHash<QString, Product*>& getProducts();
 
 protected:
-    QList< std::pair<QString, QString> > keywords; //Keywords the parser watch for
+    //Find keywords from all products in message
+    QList<Product*> findKeywords(QString message);
+
+    //Find keywords from product in message
+    bool findProductKeywords(Product* product, QString message);
+
     QHash<QString, Person*> people;
     QHash<QString, Product*> products;
+
+    QHash<QString, Post*> posts;
+
+    QJson::Parser parser;
+    NetworkManager* networkmanager;
 
 };
 

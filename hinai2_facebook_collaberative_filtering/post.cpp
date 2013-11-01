@@ -4,3 +4,8 @@ Post::Post()
 {
 
 }
+
+void Post::setMessage(QString msg)
+{
+    message = msg;
+}

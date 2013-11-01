@@ -20,6 +20,11 @@ public:
     //Get a list of people who liked this post
     QList<Person*>& getLiked();
 
+    void setMessage(QString msg);
+
+protected:
+    QString message;
+
 };
 
 #endif // POST_H
