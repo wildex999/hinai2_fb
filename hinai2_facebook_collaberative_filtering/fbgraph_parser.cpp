@@ -246,8 +246,11 @@ bool FBGraph_Parser::parseComments(Post* post, QVariantMap &comments)
     }
 }
 
-bool FBGraph_Parser::parsePerson(QByteArray &rawData)
+bool FBGraph_Parser::parsePerson3(QByteArray &rawData)
 {
+  QString data = rawData.data();
+  qDebug() << data;
+
   return false;
 }
 

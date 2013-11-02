@@ -39,6 +39,9 @@ protected:
     QString token;
     FBGraph_Parser* parser;
 
+private:
+    void initiateFacebookCookies();
+
 };
 
 #endif // NETWORKMANAGER_H

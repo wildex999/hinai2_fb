@@ -24,7 +24,7 @@ public:
 
     bool parseFile(std::string file); //Parse a file
     bool parse(QByteArray& rawdata); //Parse raw data
-    bool parsePerson(QByteArray& rawData);
+    bool parsePerson3(QByteArray& rawData);
     Person* parsePerson1(QVariantMap& from); //Parse person from main graph list(Comments/Likes)
     bool parsePerson2(QVariantMap& data); //Parse persons FB Graph
 

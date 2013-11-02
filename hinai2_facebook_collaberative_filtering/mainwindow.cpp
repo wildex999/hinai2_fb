@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     net->setToken("CAACEdEose0cBAMiMv6pFcLXlCjwa4GDmDS08CnU2wHtpaxtRchxLW3o7262kqtNZB6mSQPWFYIwv9WcXZCZCCgm65HPMrTf1fDdvZAn058UNNHBrgOpHogXW5aslkgM1tZAZA3a93gWG3xryEzI63K9byVSmrTWZBUnStvfQZBKLY5r9Y1XyZAAoYbgdPbYuGMpcZD");
     net->addGetGraphJob("&fields=posts", "expertnorge");
 
-    net->addGetFacebookAboutPersonPage("aleksanderpedersen");
+    //net->addGetFacebookAboutPersonPage("birgitte.haavardsholm");
 
     
     CollaberativeFiltering cf;
