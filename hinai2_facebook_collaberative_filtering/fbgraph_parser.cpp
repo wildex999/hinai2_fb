@@ -98,6 +98,42 @@ bool FBGraph_Parser::parse(QByteArray& rawdata)
         return parsePerson2(data);
     }
 
+    //Check if we are parsing like or comment pages
+    //currentShop = postid/likes or postid/comments
+    if(currentShop.contains("likes") || currentShop.contains("comments"))
+    {
+        QStringList strings = currentShop.split("/", QString::SkipEmptyParts);
+        if(strings.size() != 2)
+        {
+            qDebug() << "Error parsing likes/comments pages!";
+            return false;
+        }
+
+        QString postid = strings[0];
+        QString pagetype = strings[1];
+
+        //Get post from id
+        Post* post = posts[postid];
+
+        if(post == NULL)
+        {
+            qDebug() << "Post not found while paging!";
+            return false;
+        }
+
+        if(pagetype.compare("likes") == 0)
+        {
+            //Parse likes
+        }
+        else if(pagetype.compare("comments") == 0)
+        {
+            //Parse comments
+            parseComments(post, data);
+            qDebug() << " Test";
+        }
+
+    }
+
     pages++;
     //qDebug() << "Parsing page " << pages << " | " << ok << " | " << currentShop;
 
@@ -152,7 +188,7 @@ bool FBGraph_Parser::parsePosts(QList<QVariant>& posts)
             }
 
             //Get all comments
-            QList<QVariant> comments = postmap["comments"].toMap()["data"].toList();
+            QVariantMap comments = postmap["comments"].toMap();
             parseComments(post, comments);
         }
         else
@@ -160,9 +196,10 @@ bool FBGraph_Parser::parsePosts(QList<QVariant>& posts)
     }
 }
 
-bool FBGraph_Parser::parseComments(Post* post, QList<QVariant> &comments)
+bool FBGraph_Parser::parseComments(Post* post, QVariantMap &comments)
 {
-    foreach(QVariant commentraw, comments)
+    QList<QVariant> commentslist = comments["data"].toList();
+    foreach(QVariant commentraw, commentslist)
     {
         QVariantMap comment = commentraw.toMap();
 
@@ -197,6 +234,16 @@ bool FBGraph_Parser::parseComments(Post* post, QList<QVariant> &comments)
         //Add person to the comment
         newcomment->setPoster(person);
     }
+
+    //Get next page of comments for this post
+    if(!comments["paging"].isNull())
+    {
+        if(!comments["paging"].toMap()["next"].isNull())
+        {
+            networkmanager->addGetJob(comments["paging"].toMap()["next"].toString());
+            qDebug() << "Get next comments page: " << comments["paging"].toMap()["next"].toString();
+        }
+    }
 }
 
 bool FBGraph_Parser::parsePerson(QByteArray &rawData)
@@ -229,9 +276,9 @@ bool FBGraph_Parser::parsePerson2(QVariantMap& data)
     if(!genderVar.isNull()) //Check if we actually got a gender
     {
         QString genderStr = genderVar.toString().toLower();
-        if(genderStr.compare("male"))
+        if(genderStr.compare("male") == 0)
             gender = Person::Male;
-        else if(genderStr.compare("female"))
+        else if(genderStr.compare("female") == 0)
             gender = Person::Female;
     }
 

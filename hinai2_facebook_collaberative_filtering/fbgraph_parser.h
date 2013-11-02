@@ -30,7 +30,7 @@ public:
 
     //Parse posts, comments and their likes
     bool parsePosts(QList<QVariant>& posts);
-    bool parseComments(Post* post, QList<QVariant>& comments);
+    bool parseComments(Post* post, QVariantMap& comments);
     bool parseLikes(QList<QVariant>& people);
 
     //Add product

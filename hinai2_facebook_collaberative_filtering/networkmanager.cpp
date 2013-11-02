@@ -5,6 +5,8 @@
 #include <QNetworkReply>
 #include <QMessageBox>
 #include <QDebug>
+#include <QNetworkCookie>
+#include <QNetworkCookieJar>
 
 #include "fbgraph_parser.h"
 
@@ -60,7 +62,9 @@ void NetworkManager::onReply(QNetworkReply *reply)
         //QMessageBox::warning(0, "Test, got data!", reply->readAll());
         //Send raw data to parser
         QByteArray rawdata = reply->readAll();
+        qDebug() << rawdata;
         QUrl url =  reply->url();
+        qDebug() << url;
 
         if(url.encodedHost().contains("graph.facebook.com"))
         {
