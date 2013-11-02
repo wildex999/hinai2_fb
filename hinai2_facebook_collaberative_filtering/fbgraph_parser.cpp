@@ -8,13 +8,20 @@
 
 #include "networkmanager.h"
 #include "post.h"
-#include "product.h"
 #include "comment.h"
+#include "person.h"
 
 FBGraph_Parser::FBGraph_Parser()
 {
     networkmanager = NULL;
     pages = 0;
+    currentShop = "Undefined";
+}
+
+FBGraph_Parser::~FBGraph_Parser()
+{
+    //Cleanup
+    //TODO
 }
 
 void FBGraph_Parser::setNetworkManager(NetworkManager *nm)
@@ -80,15 +87,24 @@ bool FBGraph_Parser::parse(QByteArray& rawdata)
     //Parse Json into QVariant
     bool ok;
     QVariantMap data = parser.parse(rawdata, &ok).toMap();
+    if(!ok)
+        return false;
+
+    //Check if we are parsing a page or a person
+    //Persons always use numbers as their path, so we do a check on that
+    long long value = currentShop.toLongLong(&ok);
+    if(ok) //Is a number, so we assume it's a person(TODO: Double check that)
+    {
+        return parsePerson2(data);
+    }
 
     pages++;
-    qDebug() << "Parsing page " << pages;
+    //qDebug() << "Parsing page " << pages << " | " << ok << " | " << currentShop;
 
     //Go through and get Posts, Comments and likes
     QVariantMap posts = data["posts"].toMap();
     if(posts.isEmpty())
         posts = data;
-    int i= 0;
 
     //Parse posts, comments and collect likes in relevant posts
     QList<QVariant> postslist = posts["data"].toList();
@@ -108,30 +124,36 @@ bool FBGraph_Parser::parsePosts(QList<QVariant>& posts)
 {
     foreach(QVariant postraw, posts)
     {
-        QVariantMap post = postraw.toMap();
+        QVariantMap postmap = postraw.toMap();
 
-        QString message = post["message"].toString();
-        QString id = post["id"].toString();
-        QString date = post["created_time"].toString();
+        QString message = postmap["message"].toString();
+        QString id = postmap["id"].toString();
+        QString date = postmap["created_time"].toString();
 
         //Add it if it doesn't exist
         QHash<QString, Post*>::Iterator postit = this->posts.find(id);
         if(postit == this->posts.end())
         {
-            Post* post = new Post(id, message, date);
+            Post* post = new Post(id, message, date, currentShop);
+
             this->posts.insert(id, post);
+            qDebug() << "Added post";
 
             //Search message for keywords
             QList<Product*> foundproducts = findKeywords(message);
 
-            //Get all likes if we found a product
+            //If we found a keyword, add the post to the list, and parse likes
             if(foundproducts.size() != 0)
             {
+                post->relevant = true; //Set relevant to true to indicate this post contains a product keyword
+
+                //Get all likes
 
             }
 
-
             //Get all comments
+            QList<QVariant> comments = postmap["comments"].toMap()["data"].toList();
+            parseComments(post, comments);
         }
         else
             continue;
@@ -149,19 +171,31 @@ bool FBGraph_Parser::parseComments(Post* post, QList<QVariant> &comments)
         QString date = comment["created_time"].toString();
 
         //No need to check if it exists, we have already done that check on the post
-        Comment* newcomment = new Comment(id, message, date);
+        Comment* newcomment = new Comment(id, message, date, post);
 
         //Add comment to the post
         post->addComment(newcomment);
 
+        if(post->relevant)
+            newcomment->relevant = true;
+
         //Search message for keywords
         QList<Product*> foundproducts = findKeywords(message);
 
-        //Get all likes if we found a product
+        //Get all likes if we found a product keyword
         if(foundproducts.size() != 0)
         {
-
+            //If a product keyword is mentioned inside the comment, it is relevant
+            newcomment->relevant = true;
         }
+
+        //Get the person
+        QVariantMap from = comment["from"].toMap();
+        Person* person = this->parsePerson1(from);
+        //Add comment to person
+        person->addComment(newcomment);
+        //Add person to the comment
+        newcomment->setPoster(person);
     }
 }
 
@@ -170,7 +204,47 @@ bool FBGraph_Parser::parsePerson(QByteArray &rawData)
   return false;
 }
 
-void FBGraph_Parser::addProduct(QString name, QString keywords[])
+Person* FBGraph_Parser::parsePerson1(QVariantMap &from)
+{
+    //Get the Id and name
+    QString id = from["id"].toString();
+    QString name = from["name"].toString();
+
+    //Add the person
+    Person* person = addPerson(id, name);
+
+    return person;
+}
+
+bool FBGraph_Parser::parsePerson2(QVariantMap& data)
+{
+    if(data.isEmpty())
+        return false;
+
+    QString id = data["id"].toString();
+    QString username = data["username"].toString();
+
+    Person::Gender gender = Person::Unknown;
+    QVariant genderVar = data["gender"];
+    if(!genderVar.isNull()) //Check if we actually got a gender
+    {
+        QString genderStr = genderVar.toString().toLower();
+        if(genderStr.compare("male"))
+            gender = Person::Male;
+        else if(genderStr.compare("female"))
+            gender = Person::Female;
+    }
+
+    //Get person(We assume that parsePerson1 created the person if it didn't exist)
+    Person* person = people[id];
+    person->setUsername(username);
+    person->setGender(gender);
+    //TODO: More?
+
+    qDebug() << "Parse person 2: " << username;
+}
+
+Product* FBGraph_Parser::addProduct(QString name, Product::ProductType type, QString keywords[])
 {
     Product* product = NULL;
 
@@ -178,7 +252,7 @@ void FBGraph_Parser::addProduct(QString name, QString keywords[])
     QHash<QString, Product*>::Iterator prodit = products.find(name);
     if(prodit == products.end())
     {
-        product = new Product(name);
+        product = new Product(name, type);
         products[name] = product;
     }
     else
@@ -190,4 +264,28 @@ void FBGraph_Parser::addProduct(QString name, QString keywords[])
         QString keyword = *keywords++;
         keywordlist->append(keyword);
     }
+
+    return product;
+}
+
+Person* FBGraph_Parser::addPerson(QString id, QString name)
+{
+    //Check if the person already exists and add if not
+    Person* person = NULL;
+    QHash<QString, Person*>::Iterator personiter = people.find(id);
+    if(personiter == people.end())
+    {
+        //Create and add the person
+        person = new Person(id, name);
+        people[id] = person;
+
+        qDebug() << "Added person: " << name;
+
+        //Send GET request for more info from FB Graph API
+        networkmanager->addGetFacebookGraphPerson(id);
+    }
+    else
+        person = *personiter;
+
+    return person;
 }

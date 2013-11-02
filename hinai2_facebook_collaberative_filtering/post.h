@@ -11,7 +11,7 @@ class Comment;
 class Post
 {
 public:
-    Post(QString id, QString msg, QString date);
+    Post(QString id, QString msg, QString date, QString shop);
 
     //Get the contents of the post
     QString& getContents();
@@ -22,7 +22,11 @@ public:
     //Get a list of people who liked this post
     QList<Person*>& getLiked();
 
+    //Get the shop this post was gathered from
+    QString& getShop();
+
     QString getId();
+
 
     void setMessage(QString msg);
     void setId(QString id);
@@ -33,6 +37,7 @@ public:
 
 protected:
     QString message;
+    QString shop;
     QHash<QString, Comment*> comments;
     QString id;
     QString date;

@@ -4,9 +4,11 @@
 #include <QString>
 #include <QList>
 #include <QHash>
+#include <QVariantMap>
 #include <qjson/parser.h>
 
-class Product;
+#include "product.h"
+
 class Person;
 class Post;
 class NetworkManager;
@@ -15,6 +17,7 @@ class FBGraph_Parser
 {
 public:
     FBGraph_Parser();
+    ~FBGraph_Parser();
 
     //Set the network manager to use when requesting further info
     void setNetworkManager(NetworkManager* nm);
@@ -22,6 +25,8 @@ public:
     bool parseFile(std::string file); //Parse a file
     bool parse(QByteArray& rawdata); //Parse raw data
     bool parsePerson(QByteArray& rawData);
+    Person* parsePerson1(QVariantMap& from); //Parse person from main graph list(Comments/Likes)
+    bool parsePerson2(QVariantMap& data); //Parse persons FB Graph
 
     //Parse posts, comments and their likes
     bool parsePosts(QList<QVariant>& posts);
@@ -29,13 +34,18 @@ public:
     bool parseLikes(QList<QVariant>& people);
 
     //Add product
-    void addProduct(QString name, QString keywords[]);
+    Product* addProduct(QString name, Product::ProductType type, QString keywords[]);
+
+    //Add person and parse further data
+    Person* addPerson(QString id, QString name);
 
     //Get a hash map of People
     QHash<QString, Person*>& getPeople();
 
     //Get a hash map of Products
     QHash<QString, Product*>& getProducts();
+
+    QString currentShop;
 
 protected:
     //Find keywords from all products in message

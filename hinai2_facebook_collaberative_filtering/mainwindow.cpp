@@ -18,9 +18,9 @@ MainWindow::MainWindow(QWidget *parent) :
     parser->setNetworkManager(net);
 
     QString oculuskeywords[] = {"oculus rift","oculus", "lol", 0};
-    parser->addProduct("Oculus Rift", oculuskeywords);
+    parser->addProduct("Oculus Rift", Product::WearableElectornics, oculuskeywords);
 
-    net->setToken("CAACEdEose0cBAHoWNSG4ZABmyKmaZBbKId3LT4KuaB2SNZB1xP04FYAjqoeVJNWTqrmEqflJ7xeR6lnDLTZAmUkJP2Tx5PEQO1aAMt01owQC4IB3ryyknXFaRZAOtOXZADxiTuzJstmikwDTxiCStxUdZCsLRuEAptzmMLePc9STMmPhTh8Q0HFPXSFGgXHQd0ZD");
+    net->setToken("CAACEdEose0cBAD7HYYUYUZAzQuG6ge26PENi5Q0OE1YcpGdZAAUkX9g2XljwwZBZCWOxWtyMsEeF39IjJklcHPFkBhUz4FvcRwFsMvX86o8BaihFA0Lz7wbuYvEWed21aZBEiTwRBAa8ZA7hBr195xDq8oDk9DukN1QsoZCfbpO7jhwQZAId3Y3qnMo24egIfcMZD");
     net->addGetGraphJob("&fields=posts", "expertnorge");
 
     net->addGetFacebookAboutPersonPage("aleksanderpedersen");

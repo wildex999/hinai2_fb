@@ -1,11 +1,12 @@
 #include "post.h"
 #include "comment.h"
 
-Post::Post(QString id, QString msg, QString date)
+Post::Post(QString id, QString msg, QString date, QString shop)
 {
     message = msg;
     this->id = id;
     this->date = date;
+    this->shop = shop;
 }
 
 void Post::setMessage(QString msg)
@@ -16,6 +17,11 @@ void Post::setMessage(QString msg)
 void Post::setId(QString id)
 {
     this->id = id;
+}
+
+QString& Post::getShop()
+{
+    return shop;
 }
 
 QString Post::getId()

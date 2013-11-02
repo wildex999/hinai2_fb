@@ -23,13 +23,18 @@ NetworkManager::~NetworkManager()
 void NetworkManager::addGetGraphJob(QString query, QString store)
 {
     QString requestUrl = "https://graph.facebook.com/" + store + "?access_token=";
-    QNetworkRequest request(QUrl(requestUrl + token + query));
-    nam->get(request);
+    nam->get(QNetworkRequest(QUrl(requestUrl + token + query)));
 }
 
 void NetworkManager::addGetPageJob(QString url)
 {
   nam->get(QNetworkRequest(QUrl(url)));
+}
+
+void NetworkManager::addGetFacebookGraphPerson(QString id)
+{
+    QString requestUrl = "https://graph.facebook.com/" + id + "?access_token=";
+    nam->get(QNetworkRequest(QUrl(requestUrl + token)));
 }
 
 void NetworkManager::addGetFacebookAboutPersonPage(QString fbUsername)
@@ -58,7 +63,12 @@ void NetworkManager::onReply(QNetworkReply *reply)
         QUrl url =  reply->url();
 
         if(url.encodedHost().contains("graph.facebook.com"))
-          parser->parse(rawdata);
+        {
+            QString path = url.path().remove(0,1);//Remove the '/'
+            //Check if this is a shop or person reply. Persons are always numbers, so check if we can convert it
+            parser->currentShop = path;
+            parser->parse(rawdata);
+        }
         else if(url.encodedHost().contains("www.facebook.com"))
           parser->parsePerson(rawdata);
         else

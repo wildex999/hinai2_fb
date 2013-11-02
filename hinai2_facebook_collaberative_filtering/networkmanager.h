@@ -17,11 +17,12 @@ public:
     NetworkManager(QMainWindow* window, FBGraph_Parser* parser);
     ~NetworkManager();
 
-    //Add a request job
+    //Add a request job for a store
     void addGetGraphJob(QString query, QString store);
 
     // Add a request to download a specified webpage.
     void addGetPageJob(QString url);
+    void addGetFacebookGraphPerson(QString id);
     void addGetFacebookAboutPersonPage(QString fbUsername);
 
     //Do a normal http get request(Used for pagination and pulling people)

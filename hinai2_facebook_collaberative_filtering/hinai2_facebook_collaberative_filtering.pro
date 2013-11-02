@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     post.cpp \
     comment.cpp \
     networkmanager.cpp \
-    collaberativefiltering.cpp
+    collaberativefiltering.cpp \
+    like.cpp
 
 HEADERS  += mainwindow.h \
     fbgraph_parser.h \
@@ -27,7 +28,8 @@ HEADERS  += mainwindow.h \
     post.h \
     comment.h \
     networkmanager.h \
-    collaberativefiltering.h
+    collaberativefiltering.h \
+    like.h
 
 FORMS    += mainwindow.ui
 
