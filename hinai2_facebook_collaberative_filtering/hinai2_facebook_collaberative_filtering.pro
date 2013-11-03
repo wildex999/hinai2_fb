@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui network
+QT       += widgets
 
 TARGET = hinai2_facebook_collaberative_filtering
 TEMPLATE = app
@@ -19,7 +20,9 @@ SOURCES += main.cpp\
     comment.cpp \
     networkmanager.cpp \
     collaberativefiltering.cpp \
-    like.cpp
+    like.cpp \
+    util.cpp \
+    locationTable.cpp
 
 HEADERS  += mainwindow.h \
     fbgraph_parser.h \
@@ -29,7 +32,9 @@ HEADERS  += mainwindow.h \
     comment.h \
     networkmanager.h \
     collaberativefiltering.h \
-    like.h
+    like.h \
+    util.h \
+    locationTable.h
 
 FORMS    += mainwindow.ui
 

@@ -6,7 +6,7 @@
 #include <QHash>
 #include <QVariantMap>
 #include <qjson/parser.h>
-
+#include "locationTable.h"
 #include "product.h"
 
 class Person;
@@ -16,7 +16,7 @@ class NetworkManager;
 class FBGraph_Parser
 {
 public:
-    FBGraph_Parser();
+    FBGraph_Parser(LocationTable* locationTable);
     ~FBGraph_Parser();
 
     //Set the network manager to use when requesting further info
@@ -27,6 +27,7 @@ public:
     bool parsePerson3(QByteArray& rawData);
     Person* parsePerson1(QVariantMap& from); //Parse person from main graph list(Comments/Likes)
     bool parsePerson2(QVariantMap& data); //Parse persons FB Graph
+    bool parseLocations(const QByteArray& rawdata);
 
     //Parse posts, comments and their likes
     bool parsePosts(QList<QVariant>& posts);
@@ -56,6 +57,7 @@ protected:
 
     QHash<QString, Person*> people;
     QHash<QString, Product*> products;
+    LocationTable* locationTable;
 
     QHash<QString, Post*> posts;
 

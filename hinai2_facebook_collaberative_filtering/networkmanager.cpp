@@ -103,6 +103,7 @@ void NetworkManager::onReply(QNetworkReply *reply)
         //Send raw data to parser
         QByteArray rawdata = reply->readAll();
         QUrl url =  reply->url();
+        qDebug() << url.encodedHost();
 
         if(url.encodedHost().contains("graph.facebook.com"))
         {
@@ -113,6 +114,10 @@ void NetworkManager::onReply(QNetworkReply *reply)
         }
         else if(url.encodedHost().contains("www.facebook.com"))
           parser->parsePerson3(rawdata);
+        else if(url.encodedHost().contains("no.wikipedia.org"))
+        {
+          parser->parseLocations(rawdata);
+        }
         else
           QMessageBox::warning(0, "Unidentified Foreign ObjectHost", "Got an url that was not expected and wouldn't get handled.", reply->errorString());
 

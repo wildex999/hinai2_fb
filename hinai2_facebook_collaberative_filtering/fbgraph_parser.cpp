@@ -10,8 +10,10 @@
 #include "post.h"
 #include "comment.h"
 #include "person.h"
+#include "util.h"
 
-FBGraph_Parser::FBGraph_Parser()
+FBGraph_Parser::FBGraph_Parser(LocationTable* locTable)
+  : locationTable(locTable)
 {
     networkmanager = NULL;
     pages = 0;
@@ -291,7 +293,15 @@ bool FBGraph_Parser::parsePerson2(QVariantMap& data)
     person->setGender(gender);
     //TODO: More?
 
-    qDebug() << "Parse person 2: " << username;
+    // Adding some random location/age data so that other parts of the project can continue.
+    QString region = locationTable->getRandomRegion();
+    QString area = locationTable->getRandomAreaByRegion(region);
+    ushort age = static_cast<ushort>(Util::randomNumber(15, 65));
+    person->setRegion(region);
+    person->setArea(area);
+    person->setAge(age);
+
+    qDebug() << "Parse person 2:" << username << "Addr:" << person->getRegion() << person->getArea() << "Age:" << person->getAge();
 }
 
 Product* FBGraph_Parser::addProduct(QString name, Product::ProductType type, QString keywords[])
@@ -338,4 +348,13 @@ Person* FBGraph_Parser::addPerson(QString id, QString name)
         person = *personiter;
 
     return person;
+}
+
+bool FBGraph_Parser::parseLocations(const QByteArray &rawdata)
+{
+  const QString html = rawdata.constData();
+
+
+
+  return true;
 }

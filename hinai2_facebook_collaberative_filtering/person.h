@@ -33,20 +33,31 @@ public:
 
     void setUsername(QString username);
     void setGender(Gender gender);
+    void setRegion(const QString& region) { region_ = region; }
+    void setArea(const QString& area) { area_ = area; }
+    void setAge(ushort age) { age_ = age; }
 
     QString& getId();
     QString& getName();
     QString& getUsername();
     Gender getGender();
+    QString getRegion() const { return region_; }
+    QString getArea() const { return area_; }
+    ushort getAge() const { return age_; }
 
 protected:
     QString id;
     QString name;
     QString username;
     Gender gender;
+    ushort age_;
+    QString region_; // Fylke
+    QString area_; // Kommune
 
     QHash<QString, Product*> products;
     QHash<QString, Comment*> comments;
+
+
 
 };
 
