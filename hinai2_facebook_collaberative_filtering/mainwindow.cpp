@@ -44,10 +44,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //net->addGetJob("www.statkart.no/Documents/CSV-filer/Fylke_og_kommuneoversikt.csv");
 
-
-
-    
-
 //    cf.addToTable(male,ipad_air);
 //    cf.addToTable(male,assasins_creed_4);
 //    cf.addToTable(male,ipad_mini);

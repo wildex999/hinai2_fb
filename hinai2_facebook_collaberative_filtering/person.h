@@ -56,19 +56,13 @@ protected:
     QString area_; // Kommune
 
     QHash<QString, Product*> products;
-<<<<<<< temp
     QHash<QString, Comment*> comments;
-
-
-
-=======
 
     int                     age;
     QString                 place;
 
     void                    findAge(QDateTime birthdate);
     void                    findPlace(QString localPlace);
->>>>>>> HEAD~0
 };
 
 #endif // PERSON_H
