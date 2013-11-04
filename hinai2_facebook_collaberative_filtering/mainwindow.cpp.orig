@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <string>
+
 
 #include "networkmanager.h"
 #include "collaberativefiltering.h"
@@ -17,7 +19,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
 
     // ================== OBS OBS ====================
     // Pass på at datafila "Fylke_og_kommuneoversikt.csv" ligger i build mappa du bruker.
@@ -38,7 +39,11 @@ MainWindow::MainWindow(QWidget *parent) :
     QString oculuskeywords[] = {"oculus rift","oculus", "lol", 0};
     parser->addProduct("Oculus Rift", Product::WearableElectornics, oculuskeywords);
 
+<<<<<<< HEAD
+    net->setToken("CAACEdEose0cBACZCQZCptyg0IjILFEltqBjsHoSg5kjr5wk06KxlIQWwd4cL00e9zDWILDequUSFVDO4ScjyxBsQjahV6tALZBRlAZB9fzksTjQ0n7mRZALXDZCmMjT8kDfciZBDDRSNMBpuVeNGbWOWBCTJUXWEZCp3WpTOyqT6tdipKM2nwwi87clNrZAEYr1vhcryKb0WYggZDZD");
+=======
     net->setToken(token);
+>>>>>>> reading token from file
     net->addGetGraphJob("&fields=posts", "expertnorge");
 
     //net->addGetFacebookAboutPersonPage("birgitte.haavardsholm");

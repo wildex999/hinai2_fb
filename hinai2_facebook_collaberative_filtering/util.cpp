@@ -47,6 +47,21 @@ QMap<QString, QList<QString> > Util::ExtractLocationsFromCVSFile(const QString &
   return locations;
 }
 
+QString Util::ExtractTokenFromFile(const QString &filename)
+{
+  QString token;
+  QFile file(filename);
+
+  if(file.open(QFile::ReadOnly))
+  {
+    QTextStream in(&file);
+    in.setCodec("UTF-8");
+    token = in.readLine();
+    file.close();
+  }
+  return token;
+}
+
 int Util::randomNumber(int min, int max)
 {
   assert(min < max && "min was >= than max");
