@@ -10,6 +10,7 @@
 #include <QDebug>
 #include "locationTable.h"
 #include "QStandardItemModel"
+#include "fbgraph_parser.h"
 
 // temp
 LocationTable* locationTable;
@@ -68,6 +69,13 @@ MainWindow::MainWindow(QWidget *parent) :
     net->addGetGraphJob("&fields=posts.fields(likes.limit(999),comments.limit(999),message)", "expertnorge");
 
     //net->addGetGraphJob("&fields=posts", "expertnorge");
+
+    QHash<QString, Person*>& people = parser->getPeople();
+    QHash<QString, Person*>::iterator i;
+    for (i = people.begin(); i != people.end(); ++i)
+        addPersonWithProducts(*i.value());
+
+
 
     //net->addGetFacebookAboutPersonPage("birgitte.haavardsholm");
 
@@ -155,12 +163,12 @@ void MainWindow::convertPersonToGroup(Person person, QList< GROUP>& groups)
 
 void MainWindow::addPersonWithProducts(Person person)
 {
-//    QList<GROUP> groups;
-//    QList<PRODUCT> products;
-//    convertPersonToGroup(person, groups);
-//    for(int i = 0; i < groups.count(); i++)
-//        for(int j = 0; j < products.count(); j++)
-//            cf.addToTable(groups[i],products[j]);
+    QList<GROUP> groups;
+    QList<PRODUCT> products;
+    convertPersonToGroup(person, groups);
+    for(int i = 0; i < groups.count(); i++)
+        for(int j = 0; j < products.count(); j++)
+            cf.addToTable(groups[i],products[j]);
 
 }
 

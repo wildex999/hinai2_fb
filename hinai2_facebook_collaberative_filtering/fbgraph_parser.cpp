@@ -385,6 +385,16 @@ Person* FBGraph_Parser::addPerson(QString id, QString name)
     return person;
 }
 
+QHash<QString, Person *> &FBGraph_Parser::getPeople()
+{
+    return people;
+}
+
+QHash<QString, Product *> &FBGraph_Parser::getProducts()
+{
+    return products;
+}
+
 bool FBGraph_Parser::parseLocations(const QByteArray &rawdata)
 {
   const QString html = rawdata.constData();
