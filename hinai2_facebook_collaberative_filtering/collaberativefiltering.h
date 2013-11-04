@@ -3,6 +3,8 @@
 
 #include <QString>
 #include <QList>
+#include <QMap>
+
 
 
 enum GROUP{
@@ -52,6 +54,8 @@ class CollaberativeFiltering
 
     void                makeCalculations();
     void                generateRandomData();
+    QString             getGroupName(int group);
+    QString             getProductName(int product);
 
 
     private:
@@ -59,11 +63,15 @@ class CollaberativeFiltering
     QList<int>          groupSum;
     QList<double>       groupMean;
     QList<double>       groupWeight;
+    QMap<GROUP, QString> groupmap;
+    QMap<PRODUCT, QString> productmap;
 
     int                 nrGroups;
     int                 nrProducts;
 
 
+    void                makeGroupMap();
+    void                makeProductMap();
     void                calculateGroupSums();
     void                calculateGroupMean();
     double              predictVote(int activeGroup, int product);

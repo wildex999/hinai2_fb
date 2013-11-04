@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QString oculuskeywords[] = {"oculus rift","oculus", "lol", 0};
     parser->addProduct("Oculus Rift", Product::WearableElectornics, oculuskeywords);
 
-    net->setToken("CAACEdEose0cBAG3ARMwgbfotDYJoYiCUIS05vspTutmasHpeotRlZBRKhDYF36BEmJsW8aWGrdH57nGgbu3ibZBMSL4MDlx2KDcycjsKIHoUAlBeXXLVqsp46mkMkfg1zkMYxqKtyrgrmhOOO1drXtmrVVXxv89SDlbjfyp13i0ZC84B1LjeEw2R0swGaD4SRiZBl0GMLgZDZD");
+    net->setToken("CAACEdEose0cBACZCQZCptyg0IjILFEltqBjsHoSg5kjr5wk06KxlIQWwd4cL00e9zDWILDequUSFVDO4ScjyxBsQjahV6tALZBRlAZB9fzksTjQ0n7mRZALXDZCmMjT8kDfciZBDDRSNMBpuVeNGbWOWBCTJUXWEZCp3WpTOyqT6tdipKM2nwwi87clNrZAEYr1vhcryKb0WYggZDZD");
     net->addGetGraphJob("&fields=posts", "expertnorge");
 
     //net->addGetFacebookAboutPersonPage("birgitte.haavardsholm");

@@ -24,6 +24,9 @@ CollaberativeFiltering::CollaberativeFiltering()
         groupSum.push_back(0);
         groupMean.push_back(0);
     }
+
+    makeGroupMap();
+    makeProductMap();
 }
 
 void CollaberativeFiltering::addToTable(GROUP group, PRODUCT product)
@@ -49,6 +52,9 @@ void CollaberativeFiltering::writeToDebug()
     output += "Group male likes fifa 14 this much: " +  QString::number(predictVote(male,fifa_14)) + " real value: " + QString::number(groupProductVotes[male][fifa_14]) + " difference: " + QString::number(error) + "%" ;
 
     qDebug() << output;
+
+    qDebug() << getProductName(0);
+
 }
 
 void CollaberativeFiltering::makeCalculations()
@@ -68,7 +74,29 @@ void CollaberativeFiltering::generateRandomData()
         }
     }
 
-//    groupProductVotes[male][fifa_14] = 0;
+    //    groupProductVotes[male][fifa_14] = 0;
+}
+
+QString CollaberativeFiltering::getGroupName(int group)
+{
+    QString name = "";
+    QMap<GROUP, QString>::iterator i;
+    for (i = groupmap.begin(); i != groupmap.end(); ++i)
+        if(i.key() == group)
+            name = i.value();
+
+    return name;
+}
+
+QString CollaberativeFiltering::getProductName(int product)
+{
+    QString name = "";
+    QMap<PRODUCT, QString>::iterator i;
+    for (i = productmap.begin(); i != productmap.end(); ++i)
+        if(i.key() == product)
+            name = i.value();
+
+    return name;
 }
 
 void CollaberativeFiltering::calculateGroupSums()
@@ -147,8 +175,39 @@ double CollaberativeFiltering::calculatePearsonCorrelationCoefficient(int active
     if(denominator>0)
         weight = nominator/denominator;
 
-    qDebug() << QString::number(weight);
+    //qDebug() << QString::number(weight);
     return weight;
+}
+
+void CollaberativeFiltering::makeGroupMap()
+{
+    groupmap.insert(male, "male");
+    groupmap.insert(female,"female");
+    groupmap.insert(age14_20, "age14_20");
+    groupmap.insert(age20_30,"age20_30");
+    groupmap.insert(age30_40, "age30_40");
+    groupmap.insert(age40_50,"age40_50");
+    groupmap.insert(age50_60, "age50_60");
+    groupmap.insert(age70_pluss,"age70_pluss");
+    groupmap.insert(ostlandet, "ostlandet");
+    groupmap.insert(sorlandet,"sorlandet");
+    groupmap.insert(vestlandet, "vestlandet");
+    groupmap.insert(trondelag,"trondelag");
+    groupmap.insert(nord_norge, "nord_norge");
+    groupmap.insert(utlandet,"utlandet");
+}
+
+void CollaberativeFiltering::makeProductMap()
+{
+
+    productmap.insert(ipad_mini, "ipad mini");
+    productmap.insert(ipad_air,"ipad air");
+    productmap.insert(google_nexus, "google nexus");
+    productmap.insert(fifa_14,"fifa 14");
+    productmap.insert(assasins_creed_4, "assasins creed_4");
+    productmap.insert(microsoft_surface_rt_64_gb,"microsoft surface rt 64 gb");
+    productmap.insert(samsung_smart_watch_galaxy_gear, "samsung smart watch galaxy gear");
+    productmap.insert(samsung_galaxy_s_iv, "samsung galaxy s iv");
 }
 
 
