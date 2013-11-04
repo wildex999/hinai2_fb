@@ -1,14 +1,19 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+<<<<<<< HEAD
+
+=======
 #include <string>
 
-
+#include <QTableView>
+>>>>>>> filled table with data
 #include "networkmanager.h"
 #include "collaberativefiltering.h"
 #include "fbgraph_parser.h"
 #include <util.h>
 #include <QDebug>
 #include "locationTable.h"
+#include "QStandardItemModel"
 
 // temp
 LocationTable* locationTable;
@@ -19,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
 
     // ================== OBS OBS ====================
     // Pass på at datafila "Fylke_og_kommuneoversikt.csv" ligger i build mappa du bruker.
@@ -40,10 +46,11 @@ MainWindow::MainWindow(QWidget *parent) :
     parser->addProduct("Oculus Rift", Product::WearableElectornics, oculuskeywords);
 
 <<<<<<< HEAD
-    net->setToken("CAACEdEose0cBACZCQZCptyg0IjILFEltqBjsHoSg5kjr5wk06KxlIQWwd4cL00e9zDWILDequUSFVDO4ScjyxBsQjahV6tALZBRlAZB9fzksTjQ0n7mRZALXDZCmMjT8kDfciZBDDRSNMBpuVeNGbWOWBCTJUXWEZCp3WpTOyqT6tdipKM2nwwi87clNrZAEYr1vhcryKb0WYggZDZD");
-=======
     net->setToken(token);
->>>>>>> reading token from file
+=======
+
+    net->setToken("CAACEdEose0cBANSlOZBLbpal7ZCbIKyuD0DaZAXgwWY4nFtRfcmFOwfVMSoqIiXzuLxipqxKDWX6qPZCh0gx2OVwZCl1RtyefdWZCbWSJ499L2b7b6BEEolKd7ZCeGqFTQwFYQLWnIYBB4oZA5xWZCygkAdx3fx4UUd6o054ZACUb7k73QQxPw7OXO8xY4cKPHKoYZD");
+>>>>>>> filled table with data
     net->addGetGraphJob("&fields=posts", "expertnorge");
 
     //net->addGetFacebookAboutPersonPage("birgitte.haavardsholm");
@@ -62,6 +69,28 @@ MainWindow::MainWindow(QWidget *parent) :
     cf.makeCalculations();
 
     cf.writeToDebug();
+
+
+    QStandardItemModel *model = new QStandardItemModel(cf.getnrGroupsValue(),cf.getnrProductsValue(),this);
+
+
+
+    for(int i=0; i<cf.getnrProductsValue(); i++)
+        model->setHorizontalHeaderItem(i, new QStandardItem(QString("Kai")));
+
+    for(int i=0; i<cf.getnrGroupsValue(); i++)
+    model->setVerticalHeaderItem(i, new QStandardItem(QString("Row Header")));
+
+    for(int i = 0; i < cf.getnrGroupsValue(); i++)
+    {
+        for(int j = 0; j < cf.getnrProductsValue(); j++)
+        {
+            QStandardItem *tableValue = new QStandardItem(QString::number(cf.getTableValue(i,j)));
+            model->setItem(i,j,tableValue);
+        }
+    }
+
+    ui->tableView->setModel(model);
 
 }
 

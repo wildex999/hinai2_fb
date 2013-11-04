@@ -34,6 +34,20 @@ void CollaberativeFiltering::addToTable(GROUP group, PRODUCT product)
     groupProductVotes[int(group)][int(product)]++;
 }
 
+int CollaberativeFiltering::getTableValue(int group, int product)
+{
+    return groupProductVotes[group][product];
+}
+
+int CollaberativeFiltering::getnrGroupsValue()
+{
+    return nrGroups;
+}
+
+int CollaberativeFiltering::getnrProductsValue()
+{
+    return nrProducts;
+}
 void CollaberativeFiltering::writeToDebug()
 {
     QString output = "\n";

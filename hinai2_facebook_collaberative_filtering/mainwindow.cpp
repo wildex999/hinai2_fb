@@ -1,12 +1,15 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <string>
 
+#include <QTableView>
 #include "networkmanager.h"
 #include "collaberativefiltering.h"
 #include "fbgraph_parser.h"
 #include <util.h>
 #include <QDebug>
 #include "locationTable.h"
+#include "QStandardItemModel"
 
 // temp
 LocationTable* locationTable;
@@ -57,6 +60,28 @@ MainWindow::MainWindow(QWidget *parent) :
     cf.makeCalculations();
 
     cf.writeToDebug();
+
+
+    QStandardItemModel *model = new QStandardItemModel(cf.getnrGroupsValue(),cf.getnrProductsValue(),this);
+
+
+
+    for(int i=0; i<cf.getnrProductsValue(); i++)
+        model->setHorizontalHeaderItem(i, new QStandardItem(QString("Kai")));
+
+    for(int i=0; i<cf.getnrGroupsValue(); i++)
+    model->setVerticalHeaderItem(i, new QStandardItem(QString("Row Header")));
+
+    for(int i = 0; i < cf.getnrGroupsValue(); i++)
+    {
+        for(int j = 0; j < cf.getnrProductsValue(); j++)
+        {
+            QStandardItem *tableValue = new QStandardItem(QString::number(cf.getTableValue(i,j)));
+            model->setItem(i,j,tableValue);
+        }
+    }
+
+    ui->tableView->setModel(model);
 
 }
 

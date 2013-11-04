@@ -57,6 +57,9 @@ class CollaberativeFiltering
     QString             getGroupName(int group);
     QString             getProductName(int product);
 
+    int                 getTableValue(int group, int product);
+    int                 getnrGroupsValue();
+    int                 getnrProductsValue();
 
     private:
     QList<QList<int> >  groupProductVotes;
