@@ -11,6 +11,8 @@
 #include "locationTable.h"
 #include "QStandardItemModel"
 #include "fbgraph_parser.h"
+#include "like.h"
+#include "post.h"
 
 // temp
 LocationTable* locationTable;
@@ -157,18 +159,41 @@ void MainWindow::convertPersonToGroup(Person person, QList< GROUP>& groups)
 //    else if (std::compare(person.getPlace(),'nord_norge') == 0)
 //        groups.append(nord_norge);
 //    else if (std::compare(person.getPlace(),'utlandet') == 0)
-//        groups.append(utlandet);
+    //        groups.append(utlandet);
 
 }
+
+void MainWindow::convertProductStringToProduct(Product product, PRODUCT &productenum)
+{
+
+}
+
+
 
 void MainWindow::addPersonWithProducts(Person person)
 {
     QList<GROUP> groups;
-    QList<PRODUCT> products;
+    QList<PRODUCT> productlist;
     convertPersonToGroup(person, groups);
-    for(int i = 0; i < groups.count(); i++)
-        for(int j = 0; j < products.count(); j++)
-            cf.addToTable(groups[i],products[j]);
+
+    QHash<QString, Product*> products ;
+    QList<Like*> likes = person.getLikes();
+    foreach(Like* like , likes)
+    {
+       Post* post = like->getPost();
+       if(post->relevant)
+       {
+           products= post->getProducts();
+       }
+    }
+
+    QHash<QString, Product*>::iterator i;
+//    for (i = products.begin(); i != products.end(); ++i)
+//            productlist.push_back(i.value());
+
+//    for(int i = 0; i < groups.count(); i++)
+//        for(int j = 0; j < productlist.count(); j++)
+//            cf.addToTable(groups[i],products[j]);
 
 }
 

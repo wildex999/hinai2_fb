@@ -42,6 +42,7 @@ public:
     void setArea(const QString& area) { area_ = area; }
     void setAge(ushort age) { age_ = age; }
 
+
     QString& getId();
     QString& getName();
     QString& getUsername();
@@ -49,6 +50,7 @@ public:
     QString getRegion() const { return region_; }
     QString getArea() const { return area_; }
     ushort getAge() const { return age_; }
+    QList<Like*> getLikes() const { return likes;}
 
 protected:
     QString id;

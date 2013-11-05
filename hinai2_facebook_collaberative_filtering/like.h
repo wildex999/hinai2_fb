@@ -11,6 +11,8 @@ class Like
 public:
     Like(Post* post, Person* person);
 
+    Post* getPost() const {return post;}
+
 
 protected:
     Person* person;
