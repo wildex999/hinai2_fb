@@ -52,6 +52,7 @@ class CollaberativeFiltering
     void                addToTable(GROUP group, PRODUCT product);
     void                writeToDebug();
 
+    void                addData(); //
     void                makeCalculations();
     void                generateRandomData();
     QString             getGroupName(int group);
@@ -73,6 +74,7 @@ class CollaberativeFiltering
     int                 nrProducts;
 
 
+    void                train();
     void                makeGroupMap();
     void                makeProductMap();
     void                calculateGroupSums();

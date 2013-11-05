@@ -48,6 +48,10 @@ int CollaberativeFiltering::getnrProductsValue()
 {
     return nrProducts;
 }
+
+void CollaberativeFiltering::train()
+{
+}
 void CollaberativeFiltering::writeToDebug()
 {
     QString output = "\n";
@@ -69,6 +73,12 @@ void CollaberativeFiltering::writeToDebug()
 
     qDebug() << getProductName(0);
 
+}
+
+void CollaberativeFiltering::addData(QList<GROUP> group, QList<PRODUCT> product)
+{
+//    int test = group.count()/3;
+//    for(int i = 0; i < group.count())   //split
 }
 
 void CollaberativeFiltering::makeCalculations()

@@ -176,7 +176,7 @@ void MainWindow::addPersonWithProducts(Person person)
     QList<PRODUCT> productlist;
     convertPersonToGroup(person, groups);
 
-    QHash<QString, Product*> products ;
+    QHash<PRODUCT, Product*> products ;
     QList<Like*> likes = person.getLikes();
     foreach(Like* like , likes)
     {
@@ -187,9 +187,9 @@ void MainWindow::addPersonWithProducts(Person person)
        }
     }
 
-    QHash<QString, Product*>::iterator i;
-//    for (i = products.begin(); i != products.end(); ++i)
-//            productlist.push_back(i.value());
+    QHash<PRODUCT, Product*>::iterator i;
+    for (i = products.begin(); i != products.end(); ++i)
+            productlist.push_back(i.key());
 
 //    for(int i = 0; i < groups.count(); i++)
 //        for(int j = 0; j < productlist.count(); j++)
