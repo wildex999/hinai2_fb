@@ -21,7 +21,6 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-
     // ================== OBS OBS ====================
     // Pass på at datafila "Fylke_og_kommuneoversikt.csv" ligger i build mappa du bruker.
     // Fila ligger i src mappa. Må kopiere den over manuelt.
@@ -67,10 +66,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     for(int i=0; i<cf.getnrProductsValue(); i++)
-        model->setHorizontalHeaderItem(i, new QStandardItem(QString("Kai")));
+        model->setHorizontalHeaderItem(i, new QStandardItem(QString(cf.getProductName(i))));
 
     for(int i=0; i<cf.getnrGroupsValue(); i++)
-    model->setVerticalHeaderItem(i, new QStandardItem(QString("Row Header")));
+    model->setVerticalHeaderItem(i, new QStandardItem(QString(cf.getGroupName(i))));
 
     for(int i = 0; i < cf.getnrGroupsValue(); i++)
     {
@@ -136,5 +135,10 @@ void MainWindow::addPersonWithProducts(Person person)
 //    for(int i = 0; i < groups.count(); i++)
 //        for(int j = 0; j < products.count(); j++)
 //            cf.addToTable(groups[i],products[j]);
+
+}
+
+void MainWindow::on_setTolkenButton_clicked()
+{
 
 }

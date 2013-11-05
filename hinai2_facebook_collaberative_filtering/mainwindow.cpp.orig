@@ -1,12 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-<<<<<<< HEAD
-
-=======
 #include <string>
 
 #include <QTableView>
->>>>>>> filled table with data
 #include "networkmanager.h"
 #include "collaberativefiltering.h"
 #include "fbgraph_parser.h"
@@ -49,8 +45,8 @@ MainWindow::MainWindow(QWidget *parent) :
     net->setToken(token);
 =======
 
-    net->setToken("CAACEdEose0cBANSlOZBLbpal7ZCbIKyuD0DaZAXgwWY4nFtRfcmFOwfVMSoqIiXzuLxipqxKDWX6qPZCh0gx2OVwZCl1RtyefdWZCbWSJ499L2b7b6BEEolKd7ZCeGqFTQwFYQLWnIYBB4oZA5xWZCygkAdx3fx4UUd6o054ZACUb7k73QQxPw7OXO8xY4cKPHKoYZD");
->>>>>>> filled table with data
+    net->setToken("CAACEdEose0cBAHVssZBAOUXbWHHIBeOFEVUwhzmHCyWLeIzt8n45GeZBpdoUB98UUezgXEJo2oE8MXhPxwXLUC8d57GaMXvqLcKjFSbZAPRf4SGpDd5ZBfIEEDY3DSQgmIce7VJ5hi99tHZAsPi8c1sun3zn7Dmiivc83NdDZBqtJyQlEpLryDeG1fosPYBA0ZD");
+>>>>>>> startet tolkin
     net->addGetGraphJob("&fields=posts", "expertnorge");
 
     //net->addGetFacebookAboutPersonPage("birgitte.haavardsholm");
@@ -76,10 +72,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     for(int i=0; i<cf.getnrProductsValue(); i++)
-        model->setHorizontalHeaderItem(i, new QStandardItem(QString("Kai")));
+        model->setHorizontalHeaderItem(i, new QStandardItem(QString(cf.getProductName(i))));
 
     for(int i=0; i<cf.getnrGroupsValue(); i++)
-    model->setVerticalHeaderItem(i, new QStandardItem(QString("Row Header")));
+    model->setVerticalHeaderItem(i, new QStandardItem(QString(cf.getGroupName(i))));
 
     for(int i = 0; i < cf.getnrGroupsValue(); i++)
     {
@@ -145,5 +141,10 @@ void MainWindow::addPersonWithProducts(Person person)
 //    for(int i = 0; i < groups.count(); i++)
 //        for(int j = 0; j < products.count(); j++)
 //            cf.addToTable(groups[i],products[j]);
+
+}
+
+void MainWindow::on_setTolkenButton_clicked()
+{
 
 }
