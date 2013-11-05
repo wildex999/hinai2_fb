@@ -50,6 +50,8 @@ void NetworkManager::addGetFacebookAboutPersonPage(QString fbUsername)
 
 void NetworkManager::addGetJob(QString url)
 {
+    url = url.replace("%28", "(");
+    url = url.replace("%29", ")");
     nam->get(QNetworkRequest(QUrl(url)));
 }
 
@@ -97,13 +99,12 @@ void NetworkManager::initiateFacebookCookies()
 
 void NetworkManager::onReply(QNetworkReply *reply)
 {
+    reply->close();
     if(reply->error() == QNetworkReply::NoError)
     {
-        //QMessageBox::warning(0, "Test, got data!", reply->readAll());
         //Send raw data to parser
         QByteArray rawdata = reply->readAll();
         QUrl url =  reply->url();
-        qDebug() << url.encodedHost();
 
         if(url.encodedHost().contains("graph.facebook.com"))
         {
@@ -120,13 +121,11 @@ void NetworkManager::onReply(QNetworkReply *reply)
         }
         else
           QMessageBox::warning(0, "Unidentified Foreign ObjectHost", "Got an url that was not expected and wouldn't get handled.", reply->errorString());
-
-
-
-
     }
     else
     {
+        qDebug() << "Error: " << reply->errorString();
+        qDebug() << "Body: " << reply->readAll();
         QMessageBox::warning(0, "Error getting network data!", reply->errorString());
     }
 }

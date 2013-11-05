@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // pointer such that it can be passed around. Should be C++11 shared pointer, but neglected for simplicity.
     locationTable = new LocationTable(Util::ExtractLocationsFromCVSFile("Fylke_og_kommuneoversikt.csv"));
-    QString token = ""; // "CAACEdEose0cBAHLPcEVCpPZAzhmebZC53P86RE9cQwtoKKLGqAc3IJDOLPtuPEfPtQSNPsQCa7UAZAZAbkvlgNZC9EtsHPlFmDmHj6nKLmiiozZBKscTWNRdxUL1ojH2KT8uD5xcI5EBi6OOoDp1yEtnij3p3YxUeC0L5ClUSYTob6TZBju5WldveqbkGCizxYZD";
+    QString token;
     token = Util::ExtractTokenFromFile("token.txt");
 
     FBGraph_Parser* parser = new FBGraph_Parser(locationTable);
@@ -37,11 +37,14 @@ MainWindow::MainWindow(QWidget *parent) :
     NetworkManager* net = new NetworkManager(this, parser);
     parser->setNetworkManager(net);
 
-    QString oculuskeywords[] = {"oculus rift","oculus", "lol", 0};
+    QString oculuskeywords[] = {"oculus rift","oculus", 0};
     parser->addProduct("Oculus Rift", Product::WearableElectornics, oculuskeywords);
 
     net->setToken(token);
-    net->addGetGraphJob("&fields=posts", "expertnorge");
+
+    net->addGetGraphJob("&fields=posts.fields(likes.limit(999),comments.limit(999),message)", "expertnorge");
+
+    //net->addGetGraphJob("&fields=posts", "expertnorge");
 
     //net->addGetFacebookAboutPersonPage("birgitte.haavardsholm");
 

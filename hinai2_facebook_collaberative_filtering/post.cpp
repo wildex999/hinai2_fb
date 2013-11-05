@@ -34,3 +34,13 @@ void Post::addComment(Comment *comment)
     //Don't check if we overwrite, we don't care
     comments[comment->getId()] = comment;
 }
+
+void Post::addLike(Like *like)
+{
+    likes.append(like);
+}
+
+QHash<QString, Product*>& Post::getProducts()
+{
+    return products;
+}

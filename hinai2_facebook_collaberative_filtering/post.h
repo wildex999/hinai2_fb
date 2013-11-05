@@ -7,6 +7,8 @@
 
 class Person;
 class Comment;
+class Product;
+class Like;
 
 class Post
 {
@@ -26,12 +28,14 @@ public:
     QString& getShop();
 
     QString getId();
+    QHash<QString, Product*>& getProducts();
 
 
     void setMessage(QString msg);
     void setId(QString id);
 
     void addComment(Comment* comment);
+    void addLike(Like* like);
 
     bool relevant; //True if the post contaians or is linked to a keyword
 
@@ -39,6 +43,8 @@ protected:
     QString message;
     QString shop;
     QHash<QString, Comment*> comments;
+    QHash<QString, Product*> products;
+    QList<Like*> likes;
     QString id;
     QString date;
 

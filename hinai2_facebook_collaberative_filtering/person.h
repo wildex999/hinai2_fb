@@ -7,6 +7,7 @@
 
 class Product;
 class Comment;
+class Like;
 
 class Person
 {
@@ -25,6 +26,8 @@ public:
 
     //Add a comment to the list of comments this person has written
     void addComment(Comment* comment);
+
+    void addLike(Like* like);
 
     //Add a like to the list done by this person
     //void addLike(Like* like);
@@ -57,6 +60,7 @@ protected:
 
     QHash<QString, Product*> products;
     QHash<QString, Comment*> comments;
+    QList<Like*> likes;
 
     int                     age;
     QString                 place;

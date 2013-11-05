@@ -15,3 +15,8 @@ Product::ProductType Product::getType()
 {
     return type;
 }
+
+QString& Product::getProductName()
+{
+    return productName;
+}

@@ -14,6 +14,11 @@ void Person::addComment(Comment *comment)
     comments[comment->getId()] = comment;
 }
 
+void Person::addLike(Like *like)
+{
+    likes.append(like);
+}
+
 void Person::setUsername(QString username)
 {
     this->username = username;
@@ -25,6 +30,10 @@ void Person::setGender(Gender gender)
 }
 
 
+QString& Person::getName()
+{
+    return name;
+}
 
 void Person::findAge(QDateTime birthdate)
 {

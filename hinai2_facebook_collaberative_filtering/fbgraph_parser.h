@@ -24,15 +24,17 @@ public:
 
     bool parseFile(std::string file); //Parse a file
     bool parse(QByteArray& rawdata); //Parse raw data
-    bool parsePerson3(QByteArray& rawData);
+
     Person* parsePerson1(QVariantMap& from); //Parse person from main graph list(Comments/Likes)
     bool parsePerson2(QVariantMap& data); //Parse persons FB Graph
+    bool parsePerson3(QByteArray& rawData);
+
     bool parseLocations(const QByteArray& rawdata);
 
     //Parse posts, comments and their likes
     bool parsePosts(QList<QVariant>& posts);
     bool parseComments(Post* post, QVariantMap& comments);
-    bool parseLikes(QList<QVariant>& people);
+    bool parseLikes(Post* post, QVariantMap& data);
 
     //Add product
     Product* addProduct(QString name, Product::ProductType type, QString keywords[]);
@@ -51,6 +53,7 @@ public:
 protected:
     //Find keywords from all products in message
     QList<Product*> findKeywords(QString message);
+    bool findAddKeywords(QString message, QHash<QString, Product*>& list); //Add found products to given list(Return true if any products found)
 
     //Find keywords from product in message
     bool findProductKeywords(Product* product, QString message);

@@ -5,12 +5,15 @@
 #include <QVariantMap>
 #include <QVariant>
 #include <QDebug>
+#include <unistd.h>
 
 #include "networkmanager.h"
 #include "post.h"
+#include "like.h"
 #include "comment.h"
 #include "person.h"
 #include "util.h"
+
 
 FBGraph_Parser::FBGraph_Parser(LocationTable* locTable)
   : locationTable(locTable)
@@ -48,6 +51,19 @@ QList<Product*> FBGraph_Parser::findKeywords(QString message)
         }
     }
     return prodlist;
+}
+
+bool FBGraph_Parser::findAddKeywords(QString message, QHash<QString, Product *> &list)
+{
+    QList<Product*> foundproducts = findKeywords(message);
+    if(foundproducts.size() <= 0)
+        return false;
+
+    QList<Product*>::Iterator prodit;
+    for(prodit = foundproducts.begin(); prodit != foundproducts.end(); prodit++)
+        list[(*prodit)->getProductName()] = *prodit;
+    qDebug() << "GOT keyword";
+    return true;
 }
 
 bool FBGraph_Parser::findProductKeywords(Product *product, QString message)
@@ -151,7 +167,7 @@ bool FBGraph_Parser::parse(QByteArray& rawdata)
     //Get next page
     if(!posts["paging"].isNull())
     {
-        qDebug() << "Asking for next page";
+        qDebug() << "Asking for next page: " + posts["paging"].toMap()["next"].toString();
         networkmanager->addGetJob(posts["paging"].toMap()["next"].toString());
     }
     else
@@ -175,18 +191,21 @@ bool FBGraph_Parser::parsePosts(QList<QVariant>& posts)
             Post* post = new Post(id, message, date, currentShop);
 
             this->posts.insert(id, post);
-            qDebug() << "Added post";
+            //qDebug() << "Added post";
 
-            //Search message for keywords
-            QList<Product*> foundproducts = findKeywords(message);
+            //Search message for keywords and add them to the post
+            bool foundproducts = findAddKeywords(message, post->getProducts());
+
 
             //If we found a keyword, add the post to the list, and parse likes
-            if(foundproducts.size() != 0)
+            if(foundproducts)
             {
                 post->relevant = true; //Set relevant to true to indicate this post contains a product keyword
 
-                //Get all likes
-
+                qDebug() << "Parsing Likes!";
+                //Get and add all likes
+                QVariantMap likes = postmap["likes"].toMap();
+                parseLikes(post, likes);
             }
 
             //Get all comments
@@ -209,42 +228,57 @@ bool FBGraph_Parser::parseComments(Post* post, QVariantMap &comments)
         QString id = comment["id"].toString();
         QString date = comment["created_time"].toString();
 
-        //No need to check if it exists, we have already done that check on the post
+        //TODO: Check if comment already exists
         Comment* newcomment = new Comment(id, message, date, post);
 
         //Add comment to the post
         post->addComment(newcomment);
 
+        //If the post is relevant, so is the comment
         if(post->relevant)
             newcomment->relevant = true;
 
         //Search message for keywords
-        QList<Product*> foundproducts = findKeywords(message);
+        bool foundproducts = findAddKeywords(message, newcomment->getProducts());
 
         //Get all likes if we found a product keyword
-        if(foundproducts.size() != 0)
+        if(foundproducts)
         {
             //If a product keyword is mentioned inside the comment, it is relevant
             newcomment->relevant = true;
+
+            QVariantMap likes = comment["likes"].toMap();
+            parseLikes(newcomment, likes);
         }
 
         //Get the person
         QVariantMap from = comment["from"].toMap();
         Person* person = this->parsePerson1(from);
-        //Add comment to person
+
         person->addComment(newcomment);
-        //Add person to the comment
         newcomment->setPoster(person);
     }
+}
 
-    //Get next page of comments for this post
-    if(!comments["paging"].isNull())
+bool FBGraph_Parser::parseLikes(Post* post, QVariantMap &data)
+{
+    QList<QVariant> likeslist = data["data"].toList();
+    foreach(QVariant likeraw, likeslist)
     {
-        if(!comments["paging"].toMap()["next"].isNull())
-        {
-            networkmanager->addGetJob(comments["paging"].toMap()["next"].toString());
-            qDebug() << "Get next comments page: " << comments["paging"].toMap()["next"].toString();
-        }
+        QVariantMap map = likeraw.toMap();
+        QString id = map["id"].toString();
+        QString name = map["name"].toString();
+
+        //Get the person using the id
+        Person* person = addPerson(id, name);
+
+        //TODO: Check if like already exists
+        Like* newlike = new Like(post, person);
+
+        post->addLike(newlike);
+        person->addLike(newlike);
+
+        qDebug() << "Got like from: " << person->getName();
     }
 }
 
@@ -301,7 +335,7 @@ bool FBGraph_Parser::parsePerson2(QVariantMap& data)
     person->setArea(area);
     person->setAge(age);
 
-    qDebug() << "Parse person 2:" << username << "Addr:" << person->getRegion() << person->getArea() << "Age:" << person->getAge();
+    //qDebug() << "Parse person 2:" << username << "Addr:" << person->getRegion() << person->getArea() << "Age:" << person->getAge();
 }
 
 Product* FBGraph_Parser::addProduct(QString name, Product::ProductType type, QString keywords[])

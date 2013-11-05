@@ -9,12 +9,12 @@ class Post;
 class Like
 {
 public:
-    Like();
+    Like(Post* post, Person* person);
 
 
 protected:
     Person* person;
-    Post* likepost;
+    Post* post;
 };
 
 #endif // LIKE_H

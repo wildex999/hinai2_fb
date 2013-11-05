@@ -38,6 +38,7 @@ protected:
     QNetworkAccessManager *nam;
     QString token;
     FBGraph_Parser* parser;
+    int recCount;
 
 private:
     void initiateFacebookCookies();
