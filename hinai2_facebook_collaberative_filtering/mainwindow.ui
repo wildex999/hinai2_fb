@@ -14,11 +14,11 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -29,17 +29,17 @@
          <rect>
           <x>0</x>
           <y>50</y>
-          <width>1291</width>
-          <height>741</height>
+          <width>1431</width>
+          <height>761</height>
          </rect>
         </property>
        </widget>
        <widget class="QLineEdit" name="tolkenLine">
         <property name="geometry">
          <rect>
-          <x>100</x>
+          <x>120</x>
           <y>10</y>
-          <width>1051</width>
+          <width>1031</width>
           <height>23</height>
          </rect>
         </property>
@@ -47,14 +47,14 @@
        <widget class="QLabel" name="label_5">
         <property name="geometry">
          <rect>
-          <x>20</x>
+          <x>6</x>
           <y>10</y>
-          <width>57</width>
-          <height>15</height>
+          <width>101</width>
+          <height>20</height>
          </rect>
         </property>
         <property name="text">
-         <string>TextLabel</string>
+         <string>Access Token:</string>
         </property>
        </widget>
        <widget class="QPushButton" name="setTolkenButton">
@@ -80,108 +80,63 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>421</width>
-          <height>141</height>
+          <width>1281</width>
+          <height>117</height>
          </rect>
         </property>
         <property name="title">
-         <string>GroupBox</string>
+         <string>Predict interest</string>
         </property>
-        <widget class="QComboBox" name="comboBox_2">
-         <property name="geometry">
-          <rect>
-           <x>120</x>
-           <y>70</y>
-           <width>79</width>
-           <height>23</height>
-          </rect>
-         </property>
-        </widget>
-        <widget class="QComboBox" name="comboBox">
-         <property name="geometry">
-          <rect>
-           <x>20</x>
-           <y>70</y>
-           <width>79</width>
-           <height>23</height>
-          </rect>
-         </property>
-        </widget>
-        <widget class="QComboBox" name="comboBox_3">
-         <property name="geometry">
-          <rect>
-           <x>220</x>
-           <y>70</y>
-           <width>79</width>
-           <height>23</height>
-          </rect>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label">
-         <property name="geometry">
-          <rect>
-           <x>30</x>
-           <y>40</y>
-           <width>57</width>
-           <height>15</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>TextLabel</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_2">
-         <property name="geometry">
-          <rect>
-           <x>130</x>
-           <y>40</y>
-           <width>57</width>
-           <height>15</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>TextLabel</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_3">
-         <property name="geometry">
-          <rect>
-           <x>230</x>
-           <y>40</y>
-           <width>57</width>
-           <height>15</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>TextLabel</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="pushButton">
-         <property name="geometry">
-          <rect>
-           <x>20</x>
-           <y>110</y>
-           <width>80</width>
-           <height>23</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>PushButton</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_4">
-         <property name="geometry">
-          <rect>
-           <x>120</x>
-           <y>110</y>
-           <width>57</width>
-           <height>15</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>TextLabel</string>
-         </property>
-        </widget>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="0" column="0" colspan="2">
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>Group</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_2">
+             <property name="text">
+              <string>Product</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="1" column="0">
+          <widget class="QComboBox" name="groupComboBox"/>
+         </item>
+         <item row="1" column="1">
+          <widget class="QComboBox" name="productComboBox"/>
+         </item>
+         <item row="1" column="2">
+          <widget class="QComboBox" name="comboBox_3"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QPushButton" name="predictButton">
+           <property name="text">
+            <string>Predict</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>TextLabel</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1" colspan="2">
+          <widget class="QLabel" name="predictLabel">
+           <property name="text">
+            <string>Prediction</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </widget>
      </widget>

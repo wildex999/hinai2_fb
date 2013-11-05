@@ -29,46 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // pointer such that it can be passed around. Should be C++11 shared pointer, but neglected for simplicity.
 
-    locationTable = new LocationTable(Util::ExtractLocationsFromCVSFile("Fylke_og_kommuneoversikt.csv"));
-    QString token;
-    token = Util::ExtractTokenFromFile("token.txt");
 
-
-
-    NetworkManager* net = new NetworkManager(this, parser);
-    parser->setNetworkManager(net);
-
-
-    QString ipadminikeywords[] = {"ipad mini", "ipad-mini", "mini", 0};
-    parser->addProduct(ipad_mini, "iPad Mini", Product::Pad, ipadminikeywords);
-
-    QString ipadairkw[] = {"ipad air", "ipad-air", "air", 0};
-    parser->addProduct(ipad_air, "iPad Air", Product::Pad, ipadairkw);
-
-    QString googlenexuskw[] = {"google nexus", "google-nexus", "nexus", 0};
-    parser->addProduct(google_nexus, "Google Nexus", Product::MobilePhone, googlenexuskw);
-
-    QString fifakw[] = {"fifa 14", "fifa14", "fifa-14", "fifa", 0};
-    parser->addProduct(fifa_14, "FIFA 14", Product::Game, fifakw);
-
-    QString asscreedkw[] = {"assassins' creed 4" , "assassins creed 4", "assassins creed", 0};
-    parser->addProduct(assasins_creed_4, "Assassins' Creed 4", Product::Game, asscreedkw);
-
-    QString micsurfkw[] = {"microsoft surface rt 64 gb", "microsoft surface rt 64gb", "surface rt 64 gb", "surface rt 64gb", "surface rt", 0};
-    parser->addProduct(microsoft_surface_rt_64_gb, "Microsoft Surface RT 64 GB", Product::Pad, micsurfkw);
-
-    QString samsmartkw[] = {"smart watch", "galaxy gear", "samsung gear", 0};
-    parser->addProduct(samsung_smart_watch_galaxy_gear, "Samsung Smart Watch - Galaxy Gears", Product::WearableElectornics, samsmartkw);
-
-    QString samgalkw[] = {"Galaxy S IV", "galaxy s 4", "s iv", "galaxy s4", "galaxy s", 0};
-    parser->addProduct(samsung_galaxy_s_iv, "Samsung Galaxy S IV", Product::MobilePhone, samgalkw);
-
-
-    net->setToken(token);
-
-    net->addGetGraphJob("&fields=posts.fields(likes.limit(999),comments.limit(999),message)", "expertnorge");
-
-    //net->addGetGraphJob("&fields=posts", "expertnorge");
 
     //net->addGetFacebookAboutPersonPage("birgitte.haavardsholm");
 
@@ -191,6 +152,7 @@ void MainWindow::on_setTolkenButton_clicked()
   QString oculuskeywords[] = {"oculus rift","oculus", "lol", 0};
   parser->addProduct("Oculus Rift", Product::WearableElectornics, oculuskeywords);
 
+  
   net->setToken(token);
   net->addGetGraphJob("&fields=posts", "expertnorge");
 }

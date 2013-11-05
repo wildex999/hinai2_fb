@@ -20,6 +20,8 @@ public:
 private slots:
     void on_setTolkenButton_clicked();
 
+    void on_predictButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     CollaberativeFiltering cf;
