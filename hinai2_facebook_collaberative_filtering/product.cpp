@@ -21,3 +21,8 @@ QString& Product::getProductName()
 {
     return productName;
 }
+
+PRODUCT Product::getProductId()
+{
+    return product;
+}

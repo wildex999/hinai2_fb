@@ -4,6 +4,7 @@
 #include <QString>
 #include <QDate>
 #include <QHash>
+#include "collaberativefiltering.h"
 
 class Person;
 class Comment;
@@ -28,7 +29,7 @@ public:
     QString& getShop();
 
     QString getId();
-    QHash<QString, Product*>& getProducts();
+    QHash<PRODUCT, Product*>& getProducts();
 
 
     void setMessage(QString msg);
@@ -43,7 +44,7 @@ protected:
     QString message;
     QString shop;
     QHash<QString, Comment*> comments;
-    QHash<QString, Product*> products;
+    QHash<PRODUCT, Product*> products;
     QList<Like*> likes;
     QString id;
     QString date;

@@ -53,7 +53,7 @@ public:
 protected:
     //Find keywords from all products in message
     QList<Product*> findKeywords(QString message);
-    bool findAddKeywords(QString message, QHash<QString, Product*>& list); //Add found products to given list(Return true if any products found)
+    bool findAddKeywords(QString message, QHash<PRODUCT, Product*>& list); //Add found products to given list(Return true if any products found)
 
     //Find keywords from product in message
     bool findProductKeywords(Product* product, QString message);

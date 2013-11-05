@@ -53,7 +53,7 @@ QList<Product*> FBGraph_Parser::findKeywords(QString message)
     return prodlist;
 }
 
-bool FBGraph_Parser::findAddKeywords(QString message, QHash<QString, Product *> &list)
+bool FBGraph_Parser::findAddKeywords(QString message, QHash<PRODUCT, Product *> &list)
 {
     QList<Product*> foundproducts = findKeywords(message);
     if(foundproducts.size() <= 0)
@@ -61,7 +61,7 @@ bool FBGraph_Parser::findAddKeywords(QString message, QHash<QString, Product *> 
 
     QList<Product*>::Iterator prodit;
     for(prodit = foundproducts.begin(); prodit != foundproducts.end(); prodit++)
-        list[(*prodit)->getProductName()] = *prodit;
+        list[(*prodit)->getProductId()] = *prodit;
     qDebug() << "GOT keyword";
     return true;
 }

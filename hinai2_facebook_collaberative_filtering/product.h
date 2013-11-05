@@ -23,6 +23,7 @@ public:
     Product(PRODUCT product, QString name, ProductType type);
 
     QString& getProductName();
+    PRODUCT getProductId();
     QList<QString>* getKeywords();
     ProductType getType();
 

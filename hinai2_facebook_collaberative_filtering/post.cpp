@@ -40,7 +40,7 @@ void Post::addLike(Like *like)
     likes.append(like);
 }
 
-QHash<QString, Product*>& Post::getProducts()
+QHash<PRODUCT, Product*>& Post::getProducts()
 {
     return products;
 }
