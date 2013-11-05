@@ -201,8 +201,8 @@ bool FBGraph_Parser::parsePosts(QList<QVariant>& posts)
             if(foundproducts)
             {
                 post->relevant = true; //Set relevant to true to indicate this post contains a product keyword
+                qDebug() << "Is relevant post: " << id;
 
-                qDebug() << "Parsing Likes!";
                 //Get and add all likes
                 QVariantMap likes = postmap["likes"].toMap();
                 parseLikes(post, likes);
@@ -246,6 +246,7 @@ bool FBGraph_Parser::parseComments(Post* post, QVariantMap &comments)
         {
             //If a product keyword is mentioned inside the comment, it is relevant
             newcomment->relevant = true;
+            qDebug() << "Is relevant comment: " << id;
 
             QVariantMap likes = comment["likes"].toMap();
             parseLikes(newcomment, likes);
@@ -373,7 +374,7 @@ Person* FBGraph_Parser::addPerson(QString id, QString name)
         person = new Person(id, name);
         people[id] = person;
 
-        qDebug() << "Added person: " << name;
+        //qDebug() << "Added person: " << name;
 
         //Send GET request for more info from FB Graph API
         networkmanager->addGetFacebookGraphPerson(id);
