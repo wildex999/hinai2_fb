@@ -37,8 +37,8 @@ MainWindow::MainWindow(QWidget *parent) :
     NetworkManager* net = new NetworkManager(this, parser);
     parser->setNetworkManager(net);
 
-    QString oculuskeywords[] = {"oculus rift","oculus", 0};
-    parser->addProduct("Oculus Rift", Product::WearableElectornics, oculuskeywords);
+    QString ipadminikeywords[] = {"ipad mini","mini", 0};
+    parser->addProduct(ipad_mini, "iPad Mini", Product::Pad, ipadminikeywords);
 
     net->setToken(token);
 

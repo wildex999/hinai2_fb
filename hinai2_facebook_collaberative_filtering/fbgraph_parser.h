@@ -37,7 +37,7 @@ public:
     bool parseLikes(Post* post, QVariantMap& data);
 
     //Add product
-    Product* addProduct(QString name, Product::ProductType type, QString keywords[]);
+    Product* addProduct(PRODUCT product, QString name, Product::ProductType type, QString keywords[]);
 
     //Add person and parse further data
     Person* addPerson(QString id, QString name);
@@ -46,7 +46,7 @@ public:
     QHash<QString, Person*>& getPeople();
 
     //Get a hash map of Products
-    QHash<QString, Product*>& getProducts();
+    QHash<PRODUCT, Product*>& getProducts();
 
     QString currentShop;
 
@@ -59,7 +59,7 @@ protected:
     bool findProductKeywords(Product* product, QString message);
 
     QHash<QString, Person*> people;
-    QHash<QString, Product*> products;
+    QHash<PRODUCT, Product*> products;
     LocationTable* locationTable;
 
     QHash<QString, Post*> posts;

@@ -38,7 +38,7 @@ QList<Product*> FBGraph_Parser::findKeywords(QString message)
 {
     QList<Product*> prodlist;
 
-    QHash<QString, Product*>::Iterator prodit;
+    QHash<PRODUCT, Product*>::Iterator prodit;
     for(prodit = products.begin(); prodit != products.end(); prodit++)
     {
         Product* product = *prodit;
@@ -338,28 +338,28 @@ bool FBGraph_Parser::parsePerson2(QVariantMap& data)
     //qDebug() << "Parse person 2:" << username << "Addr:" << person->getRegion() << person->getArea() << "Age:" << person->getAge();
 }
 
-Product* FBGraph_Parser::addProduct(QString name, Product::ProductType type, QString keywords[])
+Product* FBGraph_Parser::addProduct(PRODUCT product, QString name, Product::ProductType type, QString keywords[])
 {
-    Product* product = NULL;
+    Product* newproduct = NULL;
 
     //Check if product exists
-    QHash<QString, Product*>::Iterator prodit = products.find(name);
+    QHash<PRODUCT, Product*>::Iterator prodit = products.find(product);
     if(prodit == products.end())
     {
-        product = new Product(name, type);
-        products[name] = product;
+        newproduct = new Product(product, name, type);
+        products[product] = newproduct;
     }
     else
-        product = *prodit;
+        newproduct = *prodit;
 
-    QList<QString>* keywordlist = product->getKeywords();
+    QList<QString>* keywordlist = newproduct->getKeywords();
     while(*keywords != NULL)
     {
         QString keyword = *keywords++;
         keywordlist->append(keyword);
     }
 
-    return product;
+    return newproduct;
 }
 
 Person* FBGraph_Parser::addPerson(QString id, QString name)

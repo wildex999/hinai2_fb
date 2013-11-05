@@ -4,6 +4,7 @@
 #include <QString>
 #include <QHash>
 #include <QDateTime>
+#include "collaberativefiltering.h"
 
 class Product;
 class Comment;
@@ -58,7 +59,7 @@ protected:
     QString region_; // Fylke
     QString area_; // Kommune
 
-    QHash<QString, Product*> products;
+    QHash<PRODUCT, Product*> products;
     QHash<QString, Comment*> comments;
     QList<Like*> likes;
 

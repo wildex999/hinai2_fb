@@ -1,7 +1,8 @@
 #include "product.h"
 
-Product::Product(QString name, ProductType type)
+Product::Product(PRODUCT product, QString name, ProductType type)
 {
+    this->product = product;
     productName = name;
     this->type = type;
 }
