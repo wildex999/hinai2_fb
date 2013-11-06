@@ -31,7 +31,7 @@ private:
      FBGraph_Parser* parser;
     void            convertPersonToGroup(Person person, QList< GROUP>& groups);
     void            convertProductStringToProduct(Product product, PRODUCT& productenum );
-    void            addPersonWithProducts(Person person);
+    void            addPersonWithProducts(Person person, bool train);
 };
 
 #endif // MAINWINDOW_H

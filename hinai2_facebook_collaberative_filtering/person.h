@@ -46,7 +46,7 @@ public:
     QString& getId();
     QString& getName();
     QString& getUsername();
-    Gender getGender();
+    Gender getGender() const {return gender; }
     QString getRegion() const { return region_; }
     QString getArea() const { return area_; }
     ushort getAge() const { return age_; }

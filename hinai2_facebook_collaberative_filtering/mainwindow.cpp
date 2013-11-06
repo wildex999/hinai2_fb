@@ -73,10 +73,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //net->addGetGraphJob("&fields=posts", "expertnorge");
 
-
-
-
-
     //net->addGetFacebookAboutPersonPage("birgitte.haavardsholm");
 
     //net->addGetJob("www.statkart.no/Documents/CSV-filer/Fylke_og_kommuneoversikt.csv");
@@ -88,33 +84,15 @@ MainWindow::MainWindow(QWidget *parent) :
 //    cf.addToTable(male,ipad_mini);
 //    cf.addToTable(age30_40,microsoft_surface_rt_64_gb);
 
-    cf.generateRandomData();
 
-    cf.makeCalculations();
+//    cf.generateRandomData();
 
-    cf.writeToDebug();
+//    cf.makeCalculations();
 
-
-    QStandardItemModel *model = new QStandardItemModel(cf.getnrGroupsValue(),cf.getnrProductsValue(),this);
+//    cf.writeToDebug();
 
 
 
-    for(int i=0; i<cf.getnrProductsValue(); i++)
-        model->setHorizontalHeaderItem(i, new QStandardItem(QString(cf.getProductName(i))));
-
-    for(int i=0; i<cf.getnrGroupsValue(); i++)
-    model->setVerticalHeaderItem(i, new QStandardItem(QString(cf.getGroupName(i))));
-
-    for(int i = 0; i < cf.getnrGroupsValue(); i++)
-    {
-        for(int j = 0; j < cf.getnrProductsValue(); j++)
-        {
-            QStandardItem *tableValue = new QStandardItem(QString::number(cf.getTableValue(i,j)));
-            model->setItem(i,j,tableValue);
-        }
-    }
-
-    ui->tableView->setModel(model);
 
 }
 
@@ -126,38 +104,64 @@ MainWindow::~MainWindow()
 
 void MainWindow::convertPersonToGroup(Person person, QList< GROUP>& groups)
 {
-//    if(compare(person.getGender(),'male') == 0)
-//        groups.append(male);
-//    else if(std::compare(person.getGender(),'female') == 0)
-//        groups.append(female);
-//    //    else
-//    //        groups.append();
+    if(person.getGender() == 0)
+        groups.append(male);
+    else if(person.getGender() == 1)
+        groups.append(female);
+    else
+        groups.append(undefined);
 
-//    if(person.getAge() < 20)
-//        groups.append(age14_20);
-//    else if(person.getAge() < 30)
-//        groups.append(age20_30);
-//    else if(person.getAge() < 40)
-//        groups.append(age30_40);
-//    else if(person.getAge() < 50)
-//        groups.append(age40_50);
-//    else if(person.getAge() < 60)
-//        groups.append(age50_60);
-//    else
-//        groups.append(age70_pluss);
+    if(person.getAge() < 20)
+        groups.append(age14_20);
+    else if(person.getAge() < 30)
+        groups.append(age20_30);
+    else if(person.getAge() < 40)
+        groups.append(age30_40);
+    else if(person.getAge() < 50)
+        groups.append(age40_50);
+    else if(person.getAge() < 60)
+        groups.append(age50_60);
+    else
+        groups.append(age70_pluss);
 
-//    if(std::compare(person.getPlace(),'ostlandet') == 0)
-//        groups.append(ostlandet);
-//    else if (std::compare(person.getPlace(),'sorlandet') == 0)
-//        groups.append(sorlandet);
-//    else if (std::compare(person.getPlace(),'trondelage') == 0)
-//        groups.append(trondelag);
-//    else if (std::compare(person.getPlace(),'vestlandet') == 0)
-//        groups.append(vestlandet);
-//    else if (std::compare(person.getPlace(),'nord_norge') == 0)
-//        groups.append(nord_norge);
-//    else if (std::compare(person.getPlace(),'utlandet') == 0)
-    //        groups.append(utlandet);
+    if(person.getRegion().compare("Østfold") == 0)
+        groups.append(ostfold);
+    else if (person.getRegion().compare("Akershus") == 0)
+        groups.append(akershus);
+    else if (person.getRegion().compare("Oslo") == 0)
+        groups.append(oslo);
+    else if (person.getRegion().compare("Hedmark") == 0)
+        groups.append(hedmark);
+    else if (person.getRegion().compare("Oppland") == 0)
+        groups.append(oppland);
+    else if (person.getRegion().compare("Buskerud") == 0)
+            groups.append(buskerud);
+    else if (person.getRegion().compare("Vestfold") == 0)
+        groups.append(vestfold);
+    else if (person.getRegion().compare("Telemark") == 0)
+        groups.append(telemark);
+    else if (person.getRegion().compare("Aust-Agder") == 0)
+        groups.append(aust_agder);
+    else if (person.getRegion().compare("Vest-Agder") == 0)
+        groups.append(vest_agder);
+    else if (person.getRegion().compare("Rogaland") == 0)
+            groups.append(rogaland);
+    else if (person.getRegion().compare("Hordaland") == 0)
+        groups.append(hordaland);
+    else if (person.getRegion().compare("Sogn og Fjordane") == 0)
+        groups.append(sogn_og_fjordane);
+    else if (person.getRegion().compare("Møre og Romsdal") == 0)
+            groups.append(more_og_romsdal);
+    else if (person.getRegion().compare("Sør Trøndelag") == 0)
+        groups.append(sor_trondelag);
+    else if (person.getRegion().compare("Nord Trøndelag") == 0)
+        groups.append(nord_trondelag);
+    else if (person.getRegion().compare("Nordland") == 0)
+        groups.append(nordland);
+    else if (person.getRegion().compare("Troms") == 0)
+        groups.append(troms);
+    else if (person.getRegion().compare("Finmark") == 0)
+            groups.append(finmark);
 
 }
 
@@ -168,7 +172,7 @@ void MainWindow::convertProductStringToProduct(Product product, PRODUCT &product
 
 
 
-void MainWindow::addPersonWithProducts(Person person)
+void MainWindow::addPersonWithProducts(Person person, bool train)
 {
     QList<GROUP> groups;
     QList<PRODUCT> productlist;
@@ -192,9 +196,14 @@ void MainWindow::addPersonWithProducts(Person person)
     for (i = products.begin(); i != products.end(); ++i)
             productlist.push_back(i.key());
 
-//    for(int i = 0; i < groups.count(); i++)
-//        for(int j = 0; j < productlist.count(); j++)
-//            cf.addToTable(groups[i],products[j]);
+    for(int i = 0; i < groups.count(); i++)
+        for(int j = 0; j < productlist.count(); j++)
+        {
+            if(train)
+                cf.addToTrainTable(groups[i],productlist[j]);
+            else
+                cf.addToTestTable(groups[i],productlist[j]);
+        }
 
 }
 
@@ -206,7 +215,39 @@ void MainWindow::on_setTolkenButton_clicked()
 void MainWindow::on_UpdatePeople_clicked()
 {
     QHash<QString, Person*>& people = parser->getPeople();
+    int train = people.count()*0.7;
+    int count = 0;
     QHash<QString, Person*>::iterator i;
     for (i = people.begin(); i != people.end(); ++i)
-        addPersonWithProducts(*i.value());
+    {
+        count++;
+        if(count<train)
+            addPersonWithProducts(*i.value(),true);
+        else
+            addPersonWithProducts(*i.value(),false);
+    }
+
+    qDebug() << "Finished adding to cf lists";
+
+    cf.makeCalculations();
+    cf.writeToDebug();
+
+    QStandardItemModel *model = new QStandardItemModel(cf.getnrGroupsValue(),cf.getnrProductsValue(),this);
+
+    for(int i=0; i<cf.getnrProductsValue(); i++)
+        model->setHorizontalHeaderItem(i, new QStandardItem(QString(cf.getProductName(i))));
+
+    for(int i=0; i<cf.getnrGroupsValue(); i++)
+    model->setVerticalHeaderItem(i, new QStandardItem(QString(cf.getGroupName(i))));
+
+    for(int i = 0; i < cf.getnrGroupsValue(); i++)
+    {
+        for(int j = 0; j < cf.getnrProductsValue(); j++)
+        {
+            QStandardItem *tableValue = new QStandardItem(QString::number(cf.getTableValue(i,j)));
+            model->setItem(i,j,tableValue);
+        }
+    }
+
+    ui->tableView->setModel(model);
 }
