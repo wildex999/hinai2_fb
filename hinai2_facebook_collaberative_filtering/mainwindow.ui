@@ -18,7 +18,7 @@
     <item row="1" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_Products">
        <property name="acceptDrops">
@@ -38,19 +38,19 @@
       </widget>
       <widget class="QWidget" name="tab">
        <attribute name="title">
-        <string>Set Token</string>
+        <string>Set Access Token</string>
        </attribute>
        <widget class="QPushButton" name="updateButton">
         <property name="geometry">
          <rect>
           <x>10</x>
           <y>120</y>
-          <width>80</width>
+          <width>171</width>
           <height>23</height>
          </rect>
         </property>
         <property name="text">
-         <string>New Table</string>
+         <string>Show Predicted table</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_5">
@@ -104,19 +104,6 @@
          </rect>
         </property>
        </widget>
-       <widget class="QPushButton" name="UpdatePeople">
-        <property name="geometry">
-         <rect>
-          <x>20</x>
-          <y>170</y>
-          <width>98</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>UpdatePeople</string>
-        </property>
-       </widget>
       </widget>
      </widget>
     </item>
@@ -128,7 +115,7 @@
      <x>0</x>
      <y>0</y>
      <width>1304</width>
-     <height>19</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>

@@ -77,8 +77,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     net->setToken(token);
 
-    net->addGetGraphJob("&fields=posts.fields(likes.limit(999),comments.limit(999),message)", "expertnorge");
-    net->addGetGraphJob("&fields=posts.fields(likes.limit(999),comments.limit(999),message)", "elkjop");
+//    net->addGetGraphJob("&fields=posts.fields(likes.limit(999),comments.limit(999),message)", "expertnorge");
+//    net->addGetGraphJob("&fields=posts.fields(likes.limit(999),comments.limit(999),message)", "elkjop");
 
     //Listen to changes in people
     connect(parser, SIGNAL(newPersonAdded(Person*)), this, SLOT(onPeopleAdded(Person*)) );
@@ -197,13 +197,16 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         for(int j = 0; j < cf.getnrProductsValue(); j++)
         {
-            QStandardItem *tableValue = new QStandardItem(QString::number(cf.getPredictedVotes(i,j)));
+            QStandardItem *tableValue = new QStandardItem(QString::number(cf.getTableValue(i,j)));
             model->setItem(i,j,tableValue);
         }
     }
 
     ui->tableView->setModel(model);
     ui->tableView->resizeColumnsToContents();
+
+    makeTable(cf,this);
+
 
 }
 
@@ -454,7 +457,7 @@ void MainWindow::on_updateButton_clicked()
     newTab = new QWidget(ui->tabWidget);
     QTableView *newTable = new QTableView(newTab);
 
-    ui->tabWidget->insertTab(tabIndex,newTab,"New Table");
+    ui->tabWidget->insertTab(tabIndex,newTab,"Predicted");
 
     makeTable(cf,this);
 
@@ -480,7 +483,7 @@ void MainWindow::makeTable(CollaberativeFiltering cf, QObject *parent)
         {
             for(int j = 0; j < cf.getnrProductsValue(); j++)
             {
-                QStandardItem *tableValue = new QStandardItem(QString::number(cf.getTableValue(i,j)));
+                QStandardItem *tableValue = new QStandardItem(QString::number(cf.getPredictedVotes(i,j)));
                 model->setItem(i,j,tableValue);
             }
         }
