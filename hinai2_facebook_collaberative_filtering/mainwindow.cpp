@@ -12,6 +12,7 @@
 #include "locationTable.h"
 #include "QStandardItemModel"
 #include "fbgraph_parser.h"
+#include "comment.h"
 #include "like.h"
 #include "post.h"
 
@@ -29,7 +30,6 @@ MainWindow::MainWindow(QWidget *parent) :
     // Pass på at datafila "Fylke_og_kommuneoversikt.csv" ligger i build mappa du bruker.
     // Fila ligger i src mappa. Må kopiere den over manuelt.
     // kan også lastes ned på www.statkart.no/Documents/CSV-filer/Fylke_og_kommuneoversikt.csv.
-
 
     // pointer such that it can be passed around. Should be C++11 shared pointer, but neglected for simplicity.
     locationTable = new LocationTable(Util::ExtractLocationsFromCVSFile("Fylke_og_kommuneoversikt.csv"));
@@ -54,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QString fifakw[] = {"fifa 14", "fifa14", "fifa-14", "fifa", 0};
     parser->addProduct(fifa_14, "FIFA 14", Product::Game, fifakw);
 
-    QString asscreedkw[] = {"assassins' creed 4" , "assassins creed 4", "assassins creed", 0};
+    QString asscreedkw[] = {"assassins' creed 4" , "assassins creed 4", "assassins creed", "black flag", "assassin`s creed", 0};
     parser->addProduct(assasins_creed_4, "Assassins' Creed 4", Product::Game, asscreedkw);
 
     QString micsurfkw[] = {"microsoft surface rt 64 gb", "microsoft surface rt 64gb", "surface rt 64 gb", "surface rt 64gb", "surface rt", 0};
@@ -71,6 +71,29 @@ MainWindow::MainWindow(QWidget *parent) :
 
     net->addGetGraphJob("&fields=posts.fields(likes.limit(999),comments.limit(999),message)", "expertnorge");
     net->addGetGraphJob("&fields=posts.fields(likes.limit(999),comments.limit(999),message)", "elkjop");
+
+    //Listen to changes in people
+    connect(parser, SIGNAL(newPersonAdded(Person*)), this, SLOT(onPeopleAdded(Person*)) );
+    connect(parser, SIGNAL(relevantPersonUpdate(Person*)), this, SLOT(onPeopleUpdated(Person*)) );
+    connect(parser, SIGNAL(newPostAdded(Post*)), this, SLOT(onPostAdded(Post*)) );
+    connect(parser, SIGNAL(newCommentAdded(Comment*)), this, SLOT(onCommentAdded(Comment*)) );
+    connect(parser, SIGNAL(newLikeAdded(Like*)), this, SLOT(onLikeAdded(Like*)) );
+    connect(parser, SIGNAL(newPageParsing()), this, SLOT(onNewPageParsing()) );
+    connect(parser, SIGNAL(doneParsing()), this, SLOT(onDoneParsing()) );
+
+    statusParsing = true;
+    statusPeopleCount = 0;
+    statusRelevantPeopleCount = 0;
+    statusPagesCount = 0;
+    statusPostsCount = 0;
+    statusRelevantPostsCount = 0;
+    statusCommentsCount = 0;
+    statusRelevantCommentsCount = 0;
+    statusLikesCount = 0;
+    statusRelevantLikesCount = 0;
+    updateStatusBar();
+
+    setupProductsTree();
 
     //net->addGetGraphJob("&fields=posts", "expertnorge");
 
@@ -101,6 +124,119 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete locationTable;
+}
+
+void MainWindow::onPeopleAdded(Person* person)
+{
+    statusPeopleCount++;
+    updateStatusBar();
+}
+
+void MainWindow::onPeopleUpdated(Person* person)
+{
+    statusRelevantPeopleCount++;
+    updateStatusBar();
+}
+
+void MainWindow::onNewPageParsing()
+{
+    statusPagesCount++;
+    updateStatusBar();
+}
+
+void MainWindow::onPostAdded(Post *post)
+{
+    statusPostsCount++;
+    //Check if relevant and increment there too
+    if(post->relevant)
+        statusRelevantPostsCount++;
+
+    //Add post to products
+    QHash<PRODUCT, Product*> products = post->getProducts();
+    foreach(Product* product, products)
+    {
+        product->postsCount++;
+        product->getItem()->child(0)->setText("Posts(" + QString::number(product->postsCount) + ")");
+    }
+
+    updateStatusBar();
+}
+
+void MainWindow::onCommentAdded(Comment *comment)
+{
+    statusCommentsCount++;
+    if(comment->relevant)
+        statusRelevantCommentsCount++;
+
+    //Add comments to products
+    QHash<PRODUCT, Product*> products = comment->getProducts();
+    foreach(Product* product, products)
+    {
+        product->commentsCount++;
+        product->getItem()->child(1)->setText("Comments(" + QString::number(product->commentsCount) + ")");
+    }
+
+    updateStatusBar();
+}
+
+void MainWindow::onLikeAdded(Like *like)
+{
+    statusLikesCount++;
+    if(like->getPost()->relevant)
+        statusRelevantLikesCount++;
+
+    //Add likes to products
+    QHash<PRODUCT, Product*> products = like->getPost()->getProducts();
+    foreach(Product* product, products)
+    {
+        product->likesCount++;
+        product->getItem()->child(2)->setText("Likes(" + QString::number(product->likesCount) + ")");
+    }
+
+    updateStatusBar();
+}
+
+void MainWindow::onDoneParsing()
+{
+    statusParsing = false;
+    updateStatusBar();
+}
+
+void MainWindow::updateStatusBar()
+{
+    QString parseStatus;
+    if(statusParsing)
+        parseStatus = "Parsing...";
+    else
+        parseStatus = "Done parsing!";
+
+
+    QString status = QString("Status: %1 | People: %2(%3 Relevant) | ").arg(parseStatus, QString::number(statusPeopleCount), QString::number(statusRelevantPeopleCount));
+    status += QString("%1 pages, %2 posts(%3 Relevant) | ").arg(QString::number(statusPagesCount), QString::number(statusPostsCount), QString::number(statusRelevantPostsCount));
+    status += QString("%1 comments(%2 Relevant) | ").arg(QString::number(statusCommentsCount), QString::number(statusRelevantCommentsCount));
+    status += QString("%1 likes(%2 Relevant)").arg(QString::number(statusLikesCount), QString::number(statusRelevantLikesCount));
+    ui->statusBar->showMessage(status);
+}
+
+void MainWindow::setupProductsTree()
+{
+    QStandardItemModel* model = new QStandardItemModel();
+
+    //Create items
+    QHash<PRODUCT, Product*> products = parser->getProducts();
+    foreach(Product* product, products)
+    {
+        QStandardItem* item = new QStandardItem(product->getProductName());
+        product->setItem(item);
+        //Add sub-items
+        item->appendRow(new QStandardItem("Posts(0)"));
+        item->appendRow(new QStandardItem("Comments(0)"));
+        item->appendRow(new QStandardItem("Likes(0)"));
+
+        model->appendRow(item);
+    }
+
+    ui->treeViewProducts->setModel(model);
 }
 
 void MainWindow::convertPersonToGroup(Person person, QList< GROUP>& groups)
@@ -287,3 +423,4 @@ void MainWindow::on_UpdatePeople_clicked()
 
     ui->tableView->setModel(model);
 }
+

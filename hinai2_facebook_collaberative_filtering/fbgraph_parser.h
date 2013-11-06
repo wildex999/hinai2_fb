@@ -12,6 +12,8 @@
 class Person;
 class Post;
 class NetworkManager;
+class Comment;
+class Like;
 
 class FBGraph_Parser : public QObject
 {
@@ -53,12 +55,17 @@ public:
     //Get a hash map of Products
     QHash<PRODUCT, Product*>& getProducts();
 
+    QHash<QString, Post*>& getPosts() { return posts; }
+
     QString currentShop;
 
 signals:
     void newPersonAdded(Person* person); //Emitted when a new person is found
-    void relevantPersonUpdate(Person* person); //Emitted when a person is added as relevant(Can emit multiple times per person)
+    void relevantPersonUpdate(Person* person); //Emitted when a person is added as relevant
     void newPostAdded(Post* post); //Emitted after comments and likes have been parsed
+    void newCommentAdded(Comment* comment); //Emitted after a comment has been parsed
+    void newLikeAdded(Like* like); //Emitted after a like has been parsed
+    void newPageParsing(); //Emitted for every page we parse
     void doneParsing(); //Emitted when there are no more outstanding network requests
 
 protected:

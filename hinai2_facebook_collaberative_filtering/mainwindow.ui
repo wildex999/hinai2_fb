@@ -18,8 +18,24 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
+      <widget class="QWidget" name="tab_Products">
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <attribute name="title">
+        <string>Products</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item alignment="Qt::AlignLeft">
+         <widget class="QTreeView" name="treeViewProducts"/>
+        </item>
+        <item>
+         <widget class="QTreeView" name="treeView_2"/>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="tab">
        <attribute name="title">
         <string>Tab 1</string>
@@ -207,7 +223,7 @@
      <x>0</x>
      <y>0</y>
      <width>1304</width>
-     <height>25</height>
+     <height>19</height>
     </rect>
    </property>
   </widget>
@@ -219,7 +235,11 @@
     <bool>false</bool>
    </attribute>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QStatusBar" name="statusBar">
+   <property name="statusTip">
+    <string/>
+   </property>
+  </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

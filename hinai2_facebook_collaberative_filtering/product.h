@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QHash>
+#include <QStandardItem>
 #include "collaberativefiltering.h"
 
 class Person;
@@ -22,11 +23,18 @@ public:
 
     Product(PRODUCT product, QString name, ProductType type);
 
+    void setItem(QStandardItem* item) { this->item = item; }
+
     QString& getProductName();
     PRODUCT getProductId();
     QList<QString>* getKeywords();
     ProductType getType();
+    QStandardItem* getItem() { return item; }
 
+    //Used for Status output
+    long postsCount;
+    long commentsCount;
+    long likesCount;
 
 protected:
     QHash<QString, Person*> people;
@@ -34,6 +42,7 @@ protected:
     ProductType type; //Product type
     QString productName;
     PRODUCT product;
+    QStandardItem* item; //Link to the tree item
 };
 
 #endif // PRODUCT_H

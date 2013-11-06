@@ -7,6 +7,7 @@ Post::Post(QString id, QString msg, QString date, QString shop)
     this->id = id;
     this->date = date;
     this->shop = shop;
+    relevant = false;
 }
 
 void Post::setMessage(QString msg)
