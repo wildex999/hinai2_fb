@@ -46,16 +46,10 @@ enum PRODUCT{
     assasins_creed_4,
     microsoft_surface_rt_64_gb,
     samsung_smart_watch_galaxy_gear,
-    samsung_galaxy_s_iv
-};
-
-enum TYPE{
+    samsung_galaxy_s_iv,
     pads,
     mobile_phones,
-    portable_computers,
-    games,
-    wearable_electronics,
-    tvs
+    games
 };
 
 class CollaberativeFiltering
@@ -69,6 +63,9 @@ class CollaberativeFiltering
     void                addToTestTable(GROUP group, PRODUCT product);
     void                addToTrainTable(GROUP group, PRODUCT product);
 
+    void                setTestData(int g, int p, int val);
+    void                setTrainData(int g, int p, int val);
+
     void                writeToDebug();
 
     //void                addData(); //
@@ -81,12 +78,18 @@ class CollaberativeFiltering
     int                 getnrGroupsValue();
     int                 getnrProductsValue();
 
-    QList<QList<int> > getTestVotes();
-    QList<QList<int> > getTrainVotes();
+    QList<QList<int> >  getTestVotes();
+    QList<QList<int> >  getTrainVotes();
+    int                 getPredictedVotes(int g, int p);
+
+    QString             query(int g, int p);
+
+    void                predictNewTable();
 
     private:
     QList<QList<int> >  groupTestProductVotes;
     QList<QList<int> >  groupTrainProductVotes;
+    QList<QList<int> >  groupPredictedVotes;
     QList<QList<int> >  groupProductVotes;
     QList<int>          groupSum;
     QList<double>       groupMean;

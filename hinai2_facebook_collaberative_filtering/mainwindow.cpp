@@ -121,6 +121,68 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //    cf.writeToDebug();
 
+    QFile file("/home/aleksander/testdata.txt");
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+
+    QTextStream in(&file);
+
+    int counter = 0;
+
+    while(!in.atEnd()) {
+        QString line = in.readLine();
+        QList<QString> fields = line.split(":");
+        for(int i = 0; i < fields.count(); i++)
+        {
+            if(counter < 28)
+            cf.setTrainData(counter,i,fields[i].toInt());
+        }
+        counter++;
+    }
+
+    file.close();
+
+    QFile file2("/home/aleksander/traindata.txt");
+    file2.open(QIODevice::ReadOnly | QIODevice::Text);
+    QTextStream in2(&file2);
+
+    int counter2 = 0;
+
+    while(!in2.atEnd()) {
+        QString line = in2.readLine();
+        QList<QString> fields = line.split(":");
+        for(int i = 0; i < fields.count(); i++)
+        {
+            if(counter2 < 28)
+            cf.setTestData(counter2,i,fields[i].toInt());
+        }
+        counter2++;
+    }
+
+    file2.close();
+
+    cf.makeCalculations();
+    cf.predictNewTable();
+
+    QStandardItemModel *model = new QStandardItemModel(cf.getnrGroupsValue(),cf.getnrProductsValue(),this);
+
+    for(int i=0; i<cf.getnrProductsValue(); i++)
+        model->setHorizontalHeaderItem(i, new QStandardItem(QString(cf.getProductName(i))));
+
+    for(int i=0; i<cf.getnrGroupsValue(); i++)
+        model->setVerticalHeaderItem(i, new QStandardItem(QString(cf.getGroupName(i))));
+
+    for(int i = 0; i < cf.getnrGroupsValue(); i++)
+    {
+        for(int j = 0; j < cf.getnrProductsValue(); j++)
+        {
+            QStandardItem *tableValue = new QStandardItem(QString::number(cf.getPredictedVotes(i,j)));
+            model->setItem(i,j,tableValue);
+        }
+    }
+
+    ui->tableView->setModel(model);
+    ui->tableView->resizeColumnsToContents();
+
 }
 
 MainWindow::~MainWindow()

@@ -348,7 +348,7 @@ bool FBGraph_Parser::parsePerson2(QVariantMap& data)
     // Adding some random location/age data so that other parts of the project can continue.
     QString region = locationTable->getRandomRegion();
     QString area = locationTable->getRandomAreaByRegion(region);
-    ushort age = static_cast<ushort>(Util::randomNumber(20, 100));
+    ushort age = static_cast<ushort>(Util::randomNumber(15, 80));
     person->setRegion(region);
     person->setArea(area);
     person->setAge(age);

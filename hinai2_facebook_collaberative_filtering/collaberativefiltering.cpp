@@ -6,7 +6,7 @@ CollaberativeFiltering::CollaberativeFiltering()
 {
     srand (time(NULL));
     nrGroups = 28;
-    nrProducts = 8;
+    nrProducts = 11;
 
     for(int i = 0; i < nrGroups; i++)
     {
@@ -18,6 +18,7 @@ CollaberativeFiltering::CollaberativeFiltering()
         groupTestProductVotes.push_back(temp);
         groupTrainProductVotes.push_back(temp);
         groupProductVotes.push_back(temp);
+        groupPredictedVotes.push_back(temp);
 
     }
 
@@ -39,11 +40,49 @@ void CollaberativeFiltering::addToTable(GROUP group, PRODUCT product)
 void CollaberativeFiltering::addToTestTable(GROUP group, PRODUCT product)
 {
     groupTestProductVotes[int(group)][int(product)]++;
+
+    if(product == fifa_14 || product == assasins_creed_4)
+        groupTestProductVotes[int(group)][int(games)]++;
+    if(product == samsung_galaxy_s_iv || product == google_nexus)
+        groupTestProductVotes[int(group)][int(mobile_phones)]++;
+    if(product == ipad_mini || product == ipad_air)
+        groupTestProductVotes[int(group)][int(pads)]++;
 }
 
 void CollaberativeFiltering::addToTrainTable(GROUP group, PRODUCT product)
 {
     groupTrainProductVotes[int(group)][int(product)]++;
+
+    if(product == fifa_14 || product == assasins_creed_4)
+        groupTrainProductVotes[int(group)][int(games)]++;
+    if(product == samsung_galaxy_s_iv || product == google_nexus)
+        groupTrainProductVotes[int(group)][int(mobile_phones)]++;
+    if(product == ipad_mini || product == ipad_air)
+        groupTrainProductVotes[int(group)][int(pads)]++;
+}
+
+void CollaberativeFiltering::setTestData(int g, int p, int val)
+{
+    groupTestProductVotes[g][p] = val;
+
+    if(p == int(fifa_14) || p == int(assasins_creed_4))
+        groupTestProductVotes[int(g)][int(games)] += val;
+    if(p == int(samsung_galaxy_s_iv) || p == int(google_nexus))
+        groupTestProductVotes[int(g)][int(mobile_phones)] += val;
+    if(p == int(ipad_mini) || p == int(ipad_air))
+        groupTestProductVotes[int(g)][int(pads)]+= val;
+}
+
+void CollaberativeFiltering::setTrainData(int g, int p, int val)
+{
+    groupTrainProductVotes[g][p] = val;
+
+    if(p == int(fifa_14) || p == int(assasins_creed_4))
+        groupTrainProductVotes[int(g)][int(games)] += val;
+    if(p == int(samsung_galaxy_s_iv) || p == int(google_nexus))
+        groupTrainProductVotes[int(g)][int(mobile_phones)]+= val;
+    if(p == int(ipad_mini) || p == int(ipad_air))
+        groupTrainProductVotes[int(g)][int(pads)]+= val;
 }
 
 int CollaberativeFiltering::getTableValue(int group, int product)
@@ -108,18 +147,29 @@ void CollaberativeFiltering::writeToDebug()
             if(check == 0)
             {
                 double predictedValue = predictVote(i,j);
+                predictedValue = std::fabs(predictedValue);
                 int trainedValue = groupTrainProductVotes[i][j];
                 if(trainedValue>0)
                 {
                     double scaledTrainedValue = double(trainedValue)*0.3;
                     double scaledPredictedValue = predictedValue*0.7;
                     double diff = scaledPredictedValue - scaledTrainedValue;
-                    double percent = std::fabs(diff)/scaledTrainedValue * 100;
+                    diff = std::fabs(diff);
+                    double percent = (diff)/scaledTrainedValue * 100;
                     output += getGroupName(i) + " likes " + getProductName(j) + " this much: " + QString::number(scaledPredictedValue) + " and trained vaalue is: " + QString::number(scaledTrainedValue) + " error: " + QString::number(percent) +"%\n";
                 }
+                else if(!std::isnan(predictedValue))
+                    output += getGroupName(i) + " likes " + getProductName(j) + " this much: " + QString::number(predictedValue) + "\n";
             }
         }
     }
+
+    int test = predictVote(age20_30 ,fifa_14);
+    output += "test: " + QString::number(test);
+    int test2 = predictVote(male ,ipad_mini);
+    output += "test2: " + QString::number(test2);
+    int test3 = predictVote(male ,google_nexus);
+    output += "test3: " + QString::number(test3);
 
     qDebug() << output;
 }
@@ -179,7 +229,7 @@ void CollaberativeFiltering::calculateGroupSums()
         int sum = 0;
         for(int j = 0; j < nrProducts; j++)
         {
-            sum += groupTrainProductVotes[i][j];
+            sum += groupTestProductVotes[i][j];
         }
         groupSum[i] = sum;
     }
@@ -193,7 +243,7 @@ void CollaberativeFiltering::calculateGroupMean()
         int count = 0;
         for(int j = 0; j < nrProducts; j++)
         {
-            if(groupTrainProductVotes[i][j]>0)
+            if(groupTestProductVotes[i][j]>0)
                 count++;
         }
         groupI.push_back(count);
@@ -248,7 +298,7 @@ double CollaberativeFiltering::calculatePearsonCorrelationCoefficient(int active
     if(denominator>0)
         weight = nominator/denominator;
 
-    //qDebug() << QString::number(weight);
+    qDebug() << QString::number(weight);
     return weight;
 }
 
@@ -288,7 +338,6 @@ void CollaberativeFiltering::makeGroupMap()
 
 void CollaberativeFiltering::makeProductMap()
 {
-
     productmap.insert(ipad_mini, "ipad mini");
     productmap.insert(ipad_air,"ipad air");
     productmap.insert(google_nexus, "google nexus");
@@ -297,11 +346,42 @@ void CollaberativeFiltering::makeProductMap()
     productmap.insert(microsoft_surface_rt_64_gb,"microsoft surface rt 64 gb");
     productmap.insert(samsung_smart_watch_galaxy_gear, "samsung smart watch galaxy gear");
     productmap.insert(samsung_galaxy_s_iv, "samsung galaxy s iv");
+    productmap.insert(pads,"pads");
+    productmap.insert(mobile_phones, "mobile phones");
+    productmap.insert(games, "games");
 }
 
 QList<QList<int> > CollaberativeFiltering::getTrainVotes()
 {
     return groupTrainProductVotes;
+}
+
+int CollaberativeFiltering::getPredictedVotes(int g, int p)
+{
+    return groupPredictedVotes[g][p];
+}
+
+QString CollaberativeFiltering::query(int g, int p)
+{
+    int predict = predictVote(g,p);
+    int actual = groupTestProductVotes[g][p];
+    float percent = std::fabs(predict - actual)/actual;
+
+    QString ret = "";
+
+    return ret;
+}
+
+void CollaberativeFiltering::predictNewTable()
+{
+    for(int i = 0; i < nrGroups; i++)
+    {
+        for(int j = 0; j < nrProducts; j++)
+        {
+            double predictedValue = predictVote(i,j);
+            groupPredictedVotes[i][j] = int(predictedValue);
+        }
+    }
 }
 
 
