@@ -390,7 +390,7 @@ QHash<QString, Person *> &FBGraph_Parser::getPeople()
     return people;
 }
 
-QHash<QString, Product *> &FBGraph_Parser::getProducts()
+QHash<PRODUCT, Product *> &FBGraph_Parser::getProducts()
 {
     return products;
 }

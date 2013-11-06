@@ -6,6 +6,8 @@
 #include "person.h"
 #include "product.h"
 
+class FBGraph_Parser;
+
 namespace Ui {
         class MainWindow;
     }
@@ -21,9 +23,12 @@ public:
 private slots:
     void on_setTolkenButton_clicked();
 
+    void on_UpdatePeople_clicked();
+
 private:
     Ui::MainWindow *ui;
     CollaberativeFiltering cf;
+     FBGraph_Parser* parser;
     void            convertPersonToGroup(Person person, QList< GROUP>& groups);
     void            convertProductStringToProduct(Product product, PRODUCT& productenum );
     void            addPersonWithProducts(Person person);

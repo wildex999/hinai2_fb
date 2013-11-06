@@ -52,7 +52,7 @@ class CollaberativeFiltering
     void                addToTable(GROUP group, PRODUCT product);
     void                writeToDebug();
 
-    void                addData(); //
+    //void                addData(); //
     void                makeCalculations();
     void                generateRandomData();
     QString             getGroupName(int group);

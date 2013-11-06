@@ -35,7 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QString token;
     token = Util::ExtractTokenFromFile("token.txt");
 
-    FBGraph_Parser* parser = new FBGraph_Parser(locationTable);
+    parser = new FBGraph_Parser(locationTable);
 
     NetworkManager* net = new NetworkManager(this, parser);
     parser->setNetworkManager(net);
@@ -72,10 +72,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //net->addGetGraphJob("&fields=posts", "expertnorge");
 
-    QHash<QString, Person*>& people = parser->getPeople();
-    QHash<QString, Person*>::iterator i;
-    for (i = people.begin(); i != people.end(); ++i)
-        addPersonWithProducts(*i.value());
+
 
 
 
@@ -187,6 +184,9 @@ void MainWindow::addPersonWithProducts(Person person)
        }
     }
 
+    if(products.count() > 0)
+        qDebug() << "Products exits";
+
     QHash<PRODUCT, Product*>::iterator i;
     for (i = products.begin(); i != products.end(); ++i)
             productlist.push_back(i.key());
@@ -200,4 +200,12 @@ void MainWindow::addPersonWithProducts(Person person)
 void MainWindow::on_setTolkenButton_clicked()
 {
 
+}
+
+void MainWindow::on_UpdatePeople_clicked()
+{
+    QHash<QString, Person*>& people = parser->getPeople();
+    QHash<QString, Person*>::iterator i;
+    for (i = people.begin(); i != people.end(); ++i)
+        addPersonWithProducts(*i.value());
 }
