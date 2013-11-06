@@ -61,6 +61,11 @@ int CollaberativeFiltering::getnrProductsValue()
     return nrProducts;
 }
 
+QList<QList<int> > CollaberativeFiltering::getTestVotes()
+{
+    return groupTestProductVotes;
+}
+
 void CollaberativeFiltering::splitDataset()
 {
     for(int i = 0; i < nrGroups; i++)
@@ -292,6 +297,11 @@ void CollaberativeFiltering::makeProductMap()
     productmap.insert(microsoft_surface_rt_64_gb,"microsoft surface rt 64 gb");
     productmap.insert(samsung_smart_watch_galaxy_gear, "samsung smart watch galaxy gear");
     productmap.insert(samsung_galaxy_s_iv, "samsung galaxy s iv");
+}
+
+QList<QList<int> > CollaberativeFiltering::getTrainVotes()
+{
+    return groupTrainProductVotes;
 }
 
 

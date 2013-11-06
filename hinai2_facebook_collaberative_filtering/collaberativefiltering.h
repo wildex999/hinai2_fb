@@ -81,6 +81,9 @@ class CollaberativeFiltering
     int                 getnrGroupsValue();
     int                 getnrProductsValue();
 
+    QList<QList<int> > getTestVotes();
+    QList<QList<int> > getTrainVotes();
+
     private:
     QList<QList<int> >  groupTestProductVotes;
     QList<QList<int> >  groupTrainProductVotes;

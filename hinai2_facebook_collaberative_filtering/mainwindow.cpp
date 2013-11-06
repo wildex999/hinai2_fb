@@ -3,6 +3,7 @@
 #include <string>
 
 #include <QTableView>
+#include <QFile>
 #include "networkmanager.h"
 #include "collaberativefiltering.h"
 #include "fbgraph_parser.h"
@@ -77,19 +78,19 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //net->addGetJob("www.statkart.no/Documents/CSV-filer/Fylke_og_kommuneoversikt.csv");
 
-//    cf.addToTable(male,ipad_air);
-//    cf.addToTable(male,assasins_creed_4);
-//    cf.addToTable(male,ipad_mini);
-//    cf.addToTable(male,ipad_mini);
-//    cf.addToTable(male,ipad_mini);
-//    cf.addToTable(age30_40,microsoft_surface_rt_64_gb);
+    //    cf.addToTable(male,ipad_air);
+    //    cf.addToTable(male,assasins_creed_4);
+    //    cf.addToTable(male,ipad_mini);
+    //    cf.addToTable(male,ipad_mini);
+    //    cf.addToTable(male,ipad_mini);
+    //    cf.addToTable(age30_40,microsoft_surface_rt_64_gb);
 
 
-//    cf.generateRandomData();
+    //    cf.generateRandomData();
 
-//    cf.makeCalculations();
+    //    cf.makeCalculations();
 
-//    cf.writeToDebug();
+    //    cf.writeToDebug();
 
 
 
@@ -135,7 +136,7 @@ void MainWindow::convertPersonToGroup(Person person, QList< GROUP>& groups)
     else if (person.getRegion().compare("Oppland") == 0)
         groups.append(oppland);
     else if (person.getRegion().compare("Buskerud") == 0)
-            groups.append(buskerud);
+        groups.append(buskerud);
     else if (person.getRegion().compare("Vestfold") == 0)
         groups.append(vestfold);
     else if (person.getRegion().compare("Telemark") == 0)
@@ -145,13 +146,13 @@ void MainWindow::convertPersonToGroup(Person person, QList< GROUP>& groups)
     else if (person.getRegion().compare("Vest-Agder") == 0)
         groups.append(vest_agder);
     else if (person.getRegion().compare("Rogaland") == 0)
-            groups.append(rogaland);
+        groups.append(rogaland);
     else if (person.getRegion().compare("Hordaland") == 0)
         groups.append(hordaland);
     else if (person.getRegion().compare("Sogn og Fjordane") == 0)
         groups.append(sogn_og_fjordane);
     else if (person.getRegion().compare("Møre og Romsdal") == 0)
-            groups.append(more_og_romsdal);
+        groups.append(more_og_romsdal);
     else if (person.getRegion().compare("Sør Trøndelag") == 0)
         groups.append(sor_trondelag);
     else if (person.getRegion().compare("Nord Trøndelag") == 0)
@@ -161,7 +162,7 @@ void MainWindow::convertPersonToGroup(Person person, QList< GROUP>& groups)
     else if (person.getRegion().compare("Troms") == 0)
         groups.append(troms);
     else if (person.getRegion().compare("Finmark") == 0)
-            groups.append(finmark);
+        groups.append(finmark);
 
 }
 
@@ -182,11 +183,11 @@ void MainWindow::addPersonWithProducts(Person person, bool train)
     QList<Like*> likes = person.getLikes();
     foreach(Like* like , likes)
     {
-       Post* post = like->getPost();
-       if(post->relevant)
-       {
-           products= post->getProducts();
-       }
+        Post* post = like->getPost();
+        if(post->relevant)
+        {
+            products= post->getProducts();
+        }
     }
 
     if(products.count() > 0)
@@ -194,7 +195,7 @@ void MainWindow::addPersonWithProducts(Person person, bool train)
 
     QHash<PRODUCT, Product*>::iterator i;
     for (i = products.begin(); i != products.end(); ++i)
-            productlist.push_back(i.key());
+        productlist.push_back(i.key());
 
     for(int i = 0; i < groups.count(); i++)
         for(int j = 0; j < productlist.count(); j++)
@@ -232,13 +233,46 @@ void MainWindow::on_UpdatePeople_clicked()
     cf.makeCalculations();
     cf.writeToDebug();
 
+    QFile file("/home/aleksander/traindata.txt");
+    file.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream out(&file);
+
+    QFile file2("/home/aleksander/testdata.txt");
+    file2.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream out2(&file2);
+
+
+    QList<QList<int> > testData = cf.getTestVotes();
+    QList<QList<int> > trainData = cf.getTrainVotes();
+
+    for(int i = 0; i < testData.count(); i++)
+    {
+        for(int j = 0; j < testData[i].count(); j++)
+        {
+            out << testData[i][j] << ":";
+        }
+        out << "\n";
+    }
+
+    for(int i = 0; i < trainData.count(); i++)
+    {
+        for(int j = 0; j < trainData[i].count(); j++)
+        {
+            out2 << trainData[i][j] << ":";
+        }
+        out2 << "\n";
+    }
+
+    file.close();
+    file2.close();
+
     QStandardItemModel *model = new QStandardItemModel(cf.getnrGroupsValue(),cf.getnrProductsValue(),this);
 
     for(int i=0; i<cf.getnrProductsValue(); i++)
         model->setHorizontalHeaderItem(i, new QStandardItem(QString(cf.getProductName(i))));
 
     for(int i=0; i<cf.getnrGroupsValue(); i++)
-    model->setVerticalHeaderItem(i, new QStandardItem(QString(cf.getGroupName(i))));
+        model->setVerticalHeaderItem(i, new QStandardItem(QString(cf.getGroupName(i))));
 
     for(int i = 0; i < cf.getnrGroupsValue(); i++)
     {
