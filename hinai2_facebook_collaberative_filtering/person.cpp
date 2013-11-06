@@ -12,6 +12,7 @@ void Person::addComment(Comment *comment)
 {
     //No need to check if comment exists, as that is done when adding the comment itself to the parser
     comments[comment->getId()] = comment;
+    gotExtendedInfo = false;
 }
 
 void Person::addLike(Like *like)
@@ -33,6 +34,11 @@ void Person::setGender(Gender gender)
 QString& Person::getName()
 {
     return name;
+}
+
+QString& Person::getId()
+{
+    return id;
 }
 
 void Person::findAge(QDateTime birthdate)

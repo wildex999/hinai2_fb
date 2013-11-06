@@ -10,18 +10,32 @@
 enum GROUP{
     male,
     female,
+    undefined,
     age14_20,
     age20_30,
     age30_40,
     age40_50,
     age50_60,
     age70_pluss,
-    ostlandet,
-    sorlandet,
-    vestlandet,
-    trondelag,
-    nord_norge,
-    utlandet
+    ostfold,
+    akershus,
+    oslo,
+    hedmark,
+    oppland,
+    buskerud,
+    vestfold,
+    telemark,
+    aust_agder,
+    vest_agder,
+    rogaland,
+    hordaland,
+    sogn_og_fjordane,
+    more_og_romsdal,
+    sor_trondelag,
+    nord_trondelag,
+    nordland,
+    troms,
+    finmark
 };
 
 enum PRODUCT{
@@ -50,8 +64,14 @@ class CollaberativeFiltering
     CollaberativeFiltering();
 
     void                addToTable(GROUP group, PRODUCT product);
+    void                splitDataset();
+
+    void                addToTestTable(GROUP group, PRODUCT product);
+    void                addToTrainTable(GROUP group, PRODUCT product);
+
     void                writeToDebug();
 
+    //void                addData(); //
     void                makeCalculations();
     void                generateRandomData();
     QString             getGroupName(int group);
@@ -61,7 +81,12 @@ class CollaberativeFiltering
     int                 getnrGroupsValue();
     int                 getnrProductsValue();
 
+    QList<QList<int> > getTestVotes();
+    QList<QList<int> > getTrainVotes();
+
     private:
+    QList<QList<int> >  groupTestProductVotes;
+    QList<QList<int> >  groupTrainProductVotes;
     QList<QList<int> >  groupProductVotes;
     QList<int>          groupSum;
     QList<double>       groupMean;
@@ -73,6 +98,8 @@ class CollaberativeFiltering
     int                 nrProducts;
 
 
+
+    void                train();
     void                makeGroupMap();
     void                makeProductMap();
     void                calculateGroupSums();

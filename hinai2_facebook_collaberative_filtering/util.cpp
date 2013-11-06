@@ -5,6 +5,7 @@
 #include <QList>
 #include <QDebug>
 #include <QStringList>
+#include <string>
 
 Util::Util()
 {

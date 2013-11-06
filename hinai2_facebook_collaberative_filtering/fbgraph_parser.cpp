@@ -62,7 +62,7 @@ bool FBGraph_Parser::findAddKeywords(QString message, QHash<PRODUCT, Product *> 
     QList<Product*>::Iterator prodit;
     for(prodit = foundproducts.begin(); prodit != foundproducts.end(); prodit++)
         list[(*prodit)->getProductId()] = *prodit;
-    qDebug() << "GOT keyword";
+    //qDebug() << "GOT keyword";
     return true;
 }
 
@@ -77,7 +77,7 @@ bool FBGraph_Parser::findProductKeywords(Product *product, QString message)
 
         if(message.contains(keyword, Qt::CaseInsensitive))
         {
-            qDebug() << "Found keyword " + keyword;
+            //qDebug() << "Found keyword " + keyword;
             return true;
         }
 
@@ -153,6 +153,7 @@ bool FBGraph_Parser::parse(QByteArray& rawdata)
     }
 
     pages++;
+    emit newPageParsing();
     //qDebug() << "Parsing page " << pages << " | " << ok << " | " << currentShop;
 
     //Go through and get Posts, Comments and likes
@@ -201,16 +202,19 @@ bool FBGraph_Parser::parsePosts(QList<QVariant>& posts)
             if(foundproducts)
             {
                 post->relevant = true; //Set relevant to true to indicate this post contains a product keyword
-                qDebug() << "Is relevant post: " << id;
-
-                //Get and add all likes
-                QVariantMap likes = postmap["likes"].toMap();
-                parseLikes(post, likes);
+                //qDebug() << "Is relevant post: " << id << " Shop: " << post->getShop();
             }
+
+            //Get and add all likes
+            QVariantMap likes = postmap["likes"].toMap();
+            parseLikes(post, likes);
 
             //Get all comments
             QVariantMap comments = postmap["comments"].toMap();
             parseComments(post, comments);
+
+            //Emit that we are done parsing this post and it's ready for use
+            emit newPostAdded(post);
         }
         else
             continue;
@@ -246,18 +250,24 @@ bool FBGraph_Parser::parseComments(Post* post, QVariantMap &comments)
         {
             //If a product keyword is mentioned inside the comment, it is relevant
             newcomment->relevant = true;
-            qDebug() << "Is relevant comment: " << id;
-
-            QVariantMap likes = comment["likes"].toMap();
-            parseLikes(newcomment, likes);
+            //qDebug() << "Is relevant comment: " << id << " Shop: " << newcomment->getShop();
         }
+
+        QVariantMap likes = comment["likes"].toMap();
+        parseLikes(newcomment, likes);
 
         //Get the person
         QVariantMap from = comment["from"].toMap();
         Person* person = this->parsePerson1(from);
 
+        if(newcomment->relevant)
+            getPersonExtended(person);
+
         person->addComment(newcomment);
         newcomment->setPoster(person);
+
+        //Emit that we are done parsing this comment
+        emit newCommentAdded(newcomment);
     }
 }
 
@@ -273,13 +283,20 @@ bool FBGraph_Parser::parseLikes(Post* post, QVariantMap &data)
         //Get the person using the id
         Person* person = addPerson(id, name);
 
+        //If the post is relevant, get extra info from person, like gender
+        if(post->relevant)
+            getPersonExtended(person);
+
         //TODO: Check if like already exists
         Like* newlike = new Like(post, person);
 
         post->addLike(newlike);
         person->addLike(newlike);
 
-        qDebug() << "Got like from: " << person->getName();
+        //qDebug() << "Got like from: " << person->getName();
+
+        //Emit that we are done parsing this like
+        emit newLikeAdded(newlike);
     }
 }
 
@@ -336,6 +353,9 @@ bool FBGraph_Parser::parsePerson2(QVariantMap& data)
     person->setArea(area);
     person->setAge(age);
 
+    //Emit that we are fully done parsing this person
+    emit relevantPersonUpdate(person);
+
     //qDebug() << "Parse person 2:" << username << "Addr:" << person->getRegion() << person->getArea() << "Age:" << person->getAge();
 }
 
@@ -374,15 +394,45 @@ Person* FBGraph_Parser::addPerson(QString id, QString name)
         person = new Person(id, name);
         people[id] = person;
 
-        //qDebug() << "Added person: " << name;
+        //Emit that we have got a new person
+        emit newPersonAdded(person);
 
-        //Send GET request for more info from FB Graph API
-        networkmanager->addGetFacebookGraphPerson(id);
+        //qDebug() << "Added person: " << name;
     }
     else
         person = *personiter;
 
     return person;
+}
+
+void FBGraph_Parser::getPersonExtended(Person *person)
+{
+    if(person == NULL)
+    {
+        qDebug() << "ERROR: Got null person";
+        return;
+    }
+
+    if(person->gotExtendedInfo)
+    {
+        //qDebug() << "Skipping existing";
+        return; //No need to do it twice
+    }
+
+    person->gotExtendedInfo = true; //Mark that we don't need to do this again
+
+    //Send GET request for more info from FB Graph API
+    networkmanager->addGetFacebookGraphPerson(person->getId());
+}
+
+QHash<QString, Person *> &FBGraph_Parser::getPeople()
+{
+    return people;
+}
+
+QHash<PRODUCT, Product *> &FBGraph_Parser::getProducts()
+{
+    return products;
 }
 
 bool FBGraph_Parser::parseLocations(const QByteArray &rawdata)
@@ -392,4 +442,10 @@ bool FBGraph_Parser::parseLocations(const QByteArray &rawdata)
 
 
   return true;
+}
+
+void FBGraph_Parser::markNetComplete()
+{
+    qDebug() << "DONE PARSING!";
+    emit doneParsing();
 }
