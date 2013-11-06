@@ -5,6 +5,10 @@
 #include "collaberativefiltering.h"
 #include "person.h"
 
+class FBGraph_Parser;
+class NetworkManager;
+class QWidget;
+class QStandardItemModel;
 namespace Ui {
         class MainWindow;
     }
@@ -18,15 +22,23 @@ public:
     ~MainWindow();
     
 private slots:
-    void on_setTolkenButton_clicked();
 
     void on_predictButton_clicked();
+
+    void on_setTokenButton_clicked();
+
+    void on_updateButton_clicked();
 
 private:
     Ui::MainWindow *ui;
     CollaberativeFiltering cf;
+    FBGraph_Parser* parser;
+    NetworkManager* net;
+    QWidget* newTab;
+    QStandardItemModel* model;
     void            convertPersonToGroup(Person person, QList< GROUP>& groups);
     void            addPersonWithProducts(Person person);
+    void            makeTable(CollaberativeFiltering cf, QObject *parent=0);
 };
 
 #endif // MAINWINDOW_H

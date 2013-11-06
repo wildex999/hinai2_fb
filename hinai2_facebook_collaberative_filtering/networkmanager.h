@@ -43,6 +43,8 @@ protected:
 private:
     void initiateFacebookCookies();
 
+    int tabIndex;
+
 };
 
 #endif // NETWORKMANAGER_H

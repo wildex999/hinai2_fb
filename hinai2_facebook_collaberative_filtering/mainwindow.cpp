@@ -14,7 +14,7 @@
 // temp
 LocationTable* locationTable;
 
-
+int tabIndex = 2;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -29,15 +29,24 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // pointer such that it can be passed around. Should be C++11 shared pointer, but neglected for simplicity.
 
+
+    model = new QStandardItemModel(cf.getnrGroupsValue(),cf.getnrProductsValue(),this);
+
     locationTable = new LocationTable(Util::ExtractLocationsFromCVSFile("Fylke_og_kommuneoversikt.csv"));
-    QString token;
-    token = Util::ExtractTokenFromFile("token.txt");
-
-
-
-    NetworkManager* net = new NetworkManager(this, parser);
+    parser = new FBGraph_Parser(locationTable);
+    net = new NetworkManager(this, parser);
     parser->setNetworkManager(net);
 
+
+    //QString token = "CAACEdEose0cBAMVHhHc9rTYfXVXVFgNLHHAln3ZCTpZAztU7NEEcONDEXIRpmU3fi6jS7AoD9LM3nZCTxnQHY1ZBLvsQ4kYbxzpyNk70a8xQRlLzdppZB7ZBlryJ6IA5j4yrbNaZABzCYQVRhZB2Xn3Q2I7FfDHs3qeJebfCbscjNJy270TeTcvqM7s82exZCU3MZD";
+    //token = Util::ExtractTokenFromFile("token.txt");
+
+
+
+
+
+    //QString oculuskeywords[] = {"oculus rift","oculus", "lol", 0};
+    //parser->addProduct("Oculus Rift", Product::WearableElectornics, oculuskeywords);
 
     QString ipadminikeywords[] = {"ipad mini", "ipad-mini", "mini", 0};
     parser->addProduct(ipad_mini, "iPad Mini", Product::Pad, ipadminikeywords);
@@ -64,9 +73,7 @@ MainWindow::MainWindow(QWidget *parent) :
     parser->addProduct(samsung_galaxy_s_iv, "Samsung Galaxy S IV", Product::MobilePhone, samgalkw);
 
 
-    net->setToken(token);
 
-    net->addGetGraphJob("&fields=posts.fields(likes.limit(999),comments.limit(999),message)", "expertnorge");
 
     //net->addGetGraphJob("&fields=posts", "expertnorge");
 
@@ -88,9 +95,6 @@ MainWindow::MainWindow(QWidget *parent) :
     cf.writeToDebug();
 
 
-    QStandardItemModel *model = new QStandardItemModel(cf.getnrGroupsValue(),cf.getnrProductsValue(),this);
-
-
     for(int i=0; i<cf.getnrProductsValue(); i++)
         model->setHorizontalHeaderItem(i, new QStandardItem(QString(cf.getProductName(i))));
 
@@ -106,18 +110,12 @@ MainWindow::MainWindow(QWidget *parent) :
         }
     }
 
-    for(int i = 0; i < cf.getnrGroupsValue(); i++)
-    {
-        ui->groupComboBox->addItem(cf.getGroupName(i));
-    }
 
-    for(int i = 0; i < cf.getnrProductsValue(); i++)
-    {
-        ui->productComboBox->addItem(cf.getProductName(i));
-    }
 
     ui->tableView->setModel(model);
     ui->tableView->resizeColumnsToContents();
+
+
 
 }
 
@@ -175,27 +173,58 @@ void MainWindow::addPersonWithProducts(Person person)
 
 }
 
-void MainWindow::on_setTolkenButton_clicked()
+
+void MainWindow::on_setTokenButton_clicked()
 {
-  QString token = ui->tolkenLine->text();
+    QString token = ui->tokenLine->text();
+    net->setToken(token);
 
-  locationTable = new LocationTable(Util::ExtractLocationsFromCVSFile("Fylke_og_kommuneoversikt.csv"));
-  //QString token = ""; // "CAACEdEose0cBAHLPcEVCpPZAzhmebZC53P86RE9cQwtoKKLGqAc3IJDOLPtuPEfPtQSNPsQCa7UAZAZAbkvlgNZC9EtsHPlFmDmHj6nKLmiiozZBKscTWNRdxUL1ojH2KT8uD5xcI5EBi6OOoDp1yEtnij3p3YxUeC0L5ClUSYTob6TZBju5WldveqbkGCizxYZD";
-  //token = Util::ExtractTokenFromFile("token.txt");
+    net->addGetGraphJob("&fields=posts.fields(likes.limit(999),comments.limit(999),message)", "expertnorge");
 
-  FBGraph_Parser* parser = new FBGraph_Parser(locationTable);
 
-  NetworkManager* net = new NetworkManager(this, parser);
-  parser->setNetworkManager(net);
 
-  QString oculuskeywords[] = {"oculus rift","oculus", "lol", 0};
-  parser->addProduct("Oculus Rift", Product::WearableElectornics, oculuskeywords);
-
-  net->setToken(token);
-  net->addGetGraphJob("&fields=posts", "expertnorge");
 }
-
 void MainWindow::on_predictButton_clicked()
 {
+
+}
+
+
+
+void MainWindow::on_updateButton_clicked()
+{
+    newTab = new QWidget(ui->tabWidget);
+    QTableView *newTable = new QTableView(newTab);
+
+    ui->tabWidget->insertTab(tabIndex,newTab,"New Table");
+
+    makeTable(cf,this);
+
+    newTable->setModel(model);
+    newTable->resize(1200,600);
+    newTable->resizeColumnsToContents();
+
+    tabIndex++;
+
+}
+
+void MainWindow::makeTable(CollaberativeFiltering cf, QObject *parent)
+{
+    model = new QStandardItemModel(cf.getnrGroupsValue(),cf.getnrProductsValue(),parent);
+
+    for(int i=0; i<cf.getnrProductsValue(); i++)
+            model->setHorizontalHeaderItem(i, new QStandardItem(QString(cf.getProductName(i))));
+
+        for(int i=0; i<cf.getnrGroupsValue(); i++)
+        model->setVerticalHeaderItem(i, new QStandardItem(QString(cf.getGroupName(i))));
+
+        for(int i = 0; i < cf.getnrGroupsValue(); i++)
+        {
+            for(int j = 0; j < cf.getnrProductsValue(); j++)
+            {
+                QStandardItem *tableValue = new QStandardItem(QString::number(cf.getTableValue(i,j)));
+                model->setItem(i,j,tableValue);
+            }
+        }
 
 }
