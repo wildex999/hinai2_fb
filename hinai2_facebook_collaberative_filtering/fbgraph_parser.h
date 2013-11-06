@@ -13,8 +13,10 @@ class Person;
 class Post;
 class NetworkManager;
 
-class FBGraph_Parser
+class FBGraph_Parser : public QObject
 {
+    Q_OBJECT
+
 public:
     FBGraph_Parser(LocationTable* locationTable);
     ~FBGraph_Parser();
@@ -49,6 +51,10 @@ public:
     QHash<PRODUCT, Product*>& getProducts();
 
     QString currentShop;
+
+signals:
+    void newPersonAdded(Person* person); //Emitted after stage 2 of adding a person
+    void newPostAdded(Post* post); //Emitted after comments and likes have been parsed
 
 protected:
     //Find keywords from all products in message

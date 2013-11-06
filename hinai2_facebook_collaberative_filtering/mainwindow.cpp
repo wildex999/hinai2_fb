@@ -69,6 +69,7 @@ MainWindow::MainWindow(QWidget *parent) :
     net->setToken(token);
 
     net->addGetGraphJob("&fields=posts.fields(likes.limit(999),comments.limit(999),message)", "expertnorge");
+    net->addGetGraphJob("&fields=posts.fields(likes.limit(999),comments.limit(999),message)", "elkjop");
 
     //net->addGetGraphJob("&fields=posts", "expertnorge");
 

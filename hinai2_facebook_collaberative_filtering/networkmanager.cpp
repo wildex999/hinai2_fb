@@ -109,7 +109,13 @@ void NetworkManager::onReply(QNetworkReply *reply)
         if(url.encodedHost().contains("graph.facebook.com"))
         {
             QString path = url.path().remove(0,1);//Remove the '/'
-            //Check if this is a shop or person reply. Persons are always numbers, so check if we can convert it
+
+            //Convert from shop id to number(Id used when paging)
+            QStringList shop = path.split("/");
+            if(shop[0].compare("169107001669") == 0)
+                path = "expertnorge";
+            else if(shop[0].compare("152082264813992") == 0)
+                path = "elkjop";
             parser->currentShop = path;
             parser->parse(rawdata);
         }
