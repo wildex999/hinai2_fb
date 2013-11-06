@@ -125,7 +125,9 @@ void MainWindow::convertPersonToGroup(Person person, QList< GROUP>& groups)
     else
         groups.append(age70_pluss);
 
-    if(person.getRegion().compare("Østfold") == 0)
+
+
+    if(person.getRegion().compare(QString::fromStdWString(L"Østfold")) == 0)
         groups.append(ostfold);
     else if (person.getRegion().compare("Akershus") == 0)
         groups.append(akershus);
@@ -151,11 +153,11 @@ void MainWindow::convertPersonToGroup(Person person, QList< GROUP>& groups)
         groups.append(hordaland);
     else if (person.getRegion().compare("Sogn og Fjordane") == 0)
         groups.append(sogn_og_fjordane);
-    else if (person.getRegion().compare("Møre og Romsdal") == 0)
+    else if (person.getRegion().compare(QString::fromStdWString(L"Møre og Romsdal")) == 0)
         groups.append(more_og_romsdal);
-    else if (person.getRegion().compare("Sør Trøndelag") == 0)
+    else if (person.getRegion().compare(QString::fromStdWString(L"Sør Trøndelag")) == 0)
         groups.append(sor_trondelag);
-    else if (person.getRegion().compare("Nord Trøndelag") == 0)
+    else if (person.getRegion().compare(QString::fromStdWString(L"Nord Trøndelag")) == 0)
         groups.append(nord_trondelag);
     else if (person.getRegion().compare("Nordland") == 0)
         groups.append(nordland);
