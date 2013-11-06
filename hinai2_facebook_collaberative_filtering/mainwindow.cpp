@@ -77,8 +77,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     net->setToken(token);
 
-//    net->addGetGraphJob("&fields=posts.fields(likes.limit(999),comments.limit(999),message)", "expertnorge");
-//    net->addGetGraphJob("&fields=posts.fields(likes.limit(999),comments.limit(999),message)", "elkjop");
+    net->addGetGraphJob("&fields=posts.fields(likes.limit(999),comments.limit(999),message)", "expertnorge");
+    net->addGetGraphJob("&fields=posts.fields(likes.limit(999),comments.limit(999),message)", "elkjop");
 
     //Listen to changes in people
     connect(parser, SIGNAL(newPersonAdded(Person*)), this, SLOT(onPeopleAdded(Person*)) );
@@ -122,26 +122,26 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //    cf.writeToDebug();
 
-    QFile file("/home/aleksander/alldata.txt");
+//    QFile file("/home/aleksander/alldata.txt");
 
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
+//    file.open(QIODevice::ReadOnly | QIODevice::Text);
 
-    QTextStream in(&file);
+//    QTextStream in(&file);
 
-    int counter = 0;
+//    int counter = 0;
 
-    while(!in.atEnd()) {
-        QString line = in.readLine();
-        QList<QString> fields = line.split(":");
-        for(int i = 0; i < fields.count(); i++)
-        {
-            if(counter < 28)
-                cf.setTestData(counter,i,fields[i].toInt());
-        }
-        counter++;
-    }
+//    while(!in.atEnd()) {
+//        QString line = in.readLine();
+//        QList<QString> fields = line.split(":");
+//        for(int i = 0; i < fields.count(); i++)
+//        {
+//            if(counter < 28)
+//                cf.setTestData(counter,i,fields[i].toInt());
+//        }
+//        counter++;
+//    }
 
-    file.close();
+//    file.close();
 
 //    QFile file("/home/aleksander/testdata.txt");
 //    file.open(QIODevice::ReadOnly | QIODevice::Text);
@@ -182,30 +182,30 @@ MainWindow::MainWindow(QWidget *parent) :
 
 //    file2.close();
 
-    cf.makeCalculations();
-    cf.predictNewTable();
+//    cf.makeCalculations();
+//    cf.predictNewTable();
 
-    QStandardItemModel *model = new QStandardItemModel(cf.getnrGroupsValue(),cf.getnrProductsValue(),this);
+//    QStandardItemModel *model = new QStandardItemModel(cf.getnrGroupsValue(),cf.getnrProductsValue(),this);
 
-    for(int i=0; i<cf.getnrProductsValue(); i++)
-        model->setHorizontalHeaderItem(i, new QStandardItem(QString(cf.getProductName(i))));
+//    for(int i=0; i<cf.getnrProductsValue(); i++)
+//        model->setHorizontalHeaderItem(i, new QStandardItem(QString(cf.getProductName(i))));
 
-    for(int i=0; i<cf.getnrGroupsValue(); i++)
-        model->setVerticalHeaderItem(i, new QStandardItem(QString(cf.getGroupName(i))));
+//    for(int i=0; i<cf.getnrGroupsValue(); i++)
+//        model->setVerticalHeaderItem(i, new QStandardItem(QString(cf.getGroupName(i))));
 
-    for(int i = 0; i < cf.getnrGroupsValue(); i++)
-    {
-        for(int j = 0; j < cf.getnrProductsValue(); j++)
-        {
-            QStandardItem *tableValue = new QStandardItem(QString::number(cf.getTableValue(i,j)));
-            model->setItem(i,j,tableValue);
-        }
-    }
+//    for(int i = 0; i < cf.getnrGroupsValue(); i++)
+//    {
+//        for(int j = 0; j < cf.getnrProductsValue(); j++)
+//        {
+//            QStandardItem *tableValue = new QStandardItem(QString::number(cf.getTableValue(i,j)));
+//            model->setItem(i,j,tableValue);
+//        }
+//    }
 
-    ui->tableView->setModel(model);
-    ui->tableView->resizeColumnsToContents();
+//    ui->tableView->setModel(model);
+//    ui->tableView->resizeColumnsToContents();
 
-    makeTable(cf,this);
+//    makeTable(cf,this);
 
 
 }
@@ -427,9 +427,9 @@ void MainWindow::addPersonWithProducts(Person person, bool train)
     for(int i = 0; i < groups.count(); i++)
         for(int j = 0; j < productlist.count(); j++)
         {
-            if(train)
-                cf.addToTrainTable(groups[i],productlist[j]);
-            else
+//            if(train)
+//                cf.addToTrainTable(groups[i],productlist[j]);
+//            else
                 cf.addToTestTable(groups[i],productlist[j]);
         }
 
@@ -454,18 +454,20 @@ void MainWindow::on_predictButton_clicked()
 
 void MainWindow::on_updateButton_clicked()
 {
+    on_UpdatePeople_clicked();
+
     newTab = new QWidget(ui->tabWidget);
     QTableView *newTable = new QTableView(newTab);
 
     ui->tabWidget->insertTab(tabIndex,newTab,"Predicted");
 
-    makeTable(cf,this);
 
     newTable->setModel(model);
     newTable->resize(1200,600);
     newTable->resizeColumnsToContents();
 
     tabIndex++;
+
 
 }
 
@@ -493,46 +495,47 @@ void MainWindow::makeTable(CollaberativeFiltering cf, QObject *parent)
 void MainWindow::on_UpdatePeople_clicked()
 {
     QHash<QString, Person*>& people = parser->getPeople();
-    int train = people.count()*0.7;
+//    int train = people.count()*0.7;
     int count = 0;
     QHash<QString, Person*>::iterator i;
     for (i = people.begin(); i != people.end(); ++i)
     {
         count++;
-        if(count<train)
-            addPersonWithProducts(*i.value(),true);
-        else
+//        if(count<train)
             addPersonWithProducts(*i.value(),false);
+//        else
+//            addPersonWithProducts(*i.value(),false);
     }
 
     qDebug() << "Finished adding to cf lists";
 
     cf.makeCalculations();
+    cf.predictNewTable();
     cf.writeToDebug();
 
-    QFile file("/home/aleksander/alldata.txt");
-    file.open(QIODevice::WriteOnly | QIODevice::Text);
-    QTextStream out(&file);
+//    QFile file("/home/aleksander/alldata.txt");
+//    file.open(QIODevice::WriteOnly | QIODevice::Text);
+//    QTextStream out(&file);
 
-//    QFile file2("/home/aleksander/testdata.txt");
-//    file2.open(QIODevice::WriteOnly | QIODevice::Text);
-//    QTextStream out2(&file2);
+////    QFile file2("/home/aleksander/testdata.txt");
+////    file2.open(QIODevice::WriteOnly | QIODevice::Text);
+////    QTextStream out2(&file2);
 
 
-    QList<QList<int> > testData = cf.getTestVotes();
-    QList<QList<int> > trainData = cf.getTrainVotes();
+//    QList<QList<int> > testData = cf.getTestVotes();
+//    QList<QList<int> > trainData = cf.getTrainVotes();
 
-    for(int i = 0; i < testData.count(); i++)
-    {
-        for(int j = 0; j < testData[i].count(); j++)
-        {
-            if(j < testData[i].count()-1)
-                out << (testData[i][j] + trainData[i][j]) << ":";
-            else
-                out << (testData[i][j] + trainData[i][j]);
-        }
-        out << "\n";
-    }
+//    for(int i = 0; i < testData.count(); i++)
+//    {
+//        for(int j = 0; j < testData[i].count(); j++)
+//        {
+//            if(j < testData[i].count()-1)
+//                out << (testData[i][j] + trainData[i][j]) << ":";
+//            else
+//                out << (testData[i][j] + trainData[i][j]);
+//        }
+//        out << "\n";
+//    }
 
 //    for(int i = 0; i < trainData.count(); i++)
 //    {
@@ -546,7 +549,7 @@ void MainWindow::on_UpdatePeople_clicked()
 //        out2 << "\n";
 //    }
 
-    file.close();
+//    file.close();
 //    file2.close();
 
     QStandardItemModel *model = new QStandardItemModel(cf.getnrGroupsValue(),cf.getnrProductsValue(),this);
@@ -567,5 +570,8 @@ void MainWindow::on_UpdatePeople_clicked()
     }
 
     ui->tableView->setModel(model);
+
+
+    makeTable(cf,this);
 }
 
