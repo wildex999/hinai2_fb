@@ -33,21 +33,19 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // pointer such that it can be passed around. Should be C++11 shared pointer, but neglected for simplicity.
 
-    parser = new FBGraph_Parser(locationTable);
+    locationTable = new LocationTable(Util::ExtractLocationsFromCVSFile("Fylke_og_kommuneoversikt.csv"));
+    QString token;
+    token = Util::ExtractTokenFromFile("token.txt");
 
+    parser = new FBGraph_Parser(locationTable);
     model = new QStandardItemModel(cf.getnrGroupsValue(),cf.getnrProductsValue(),this);
 
-    locationTable = new LocationTable(Util::ExtractLocationsFromCVSFile("Fylke_og_kommuneoversikt.csv"));
-    parser = new FBGraph_Parser(locationTable);
     net = new NetworkManager(this, parser);
     parser->setNetworkManager(net);
 
 
     //QString token = "CAACEdEose0cBAMVHhHc9rTYfXVXVFgNLHHAln3ZCTpZAztU7NEEcONDEXIRpmU3fi6jS7AoD9LM3nZCTxnQHY1ZBLvsQ4kYbxzpyNk70a8xQRlLzdppZB7ZBlryJ6IA5j4yrbNaZABzCYQVRhZB2Xn3Q2I7FfDHs3qeJebfCbscjNJy270TeTcvqM7s82exZCU3MZD";
     //token = Util::ExtractTokenFromFile("token.txt");
-
-
-
 
 
     //QString oculuskeywords[] = {"oculus rift","oculus", "lol", 0};
@@ -65,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QString fifakw[] = {"fifa 14", "fifa14", "fifa-14", "fifa", 0};
     parser->addProduct(fifa_14, "FIFA 14", Product::Game, fifakw);
 
-    QString asscreedkw[] = {"assassins' creed 4" , "assassins creed 4", "assassins creed", "black flag", "assassin`s creed", 0};
+    QString asscreedkw[] = {"assassins' creed 4" , "assassins creed 4", "assassins creed", 0};
     parser->addProduct(assasins_creed_4, "Assassins' Creed 4", Product::Game, asscreedkw);
 
     QString micsurfkw[] = {"microsoft surface rt 64 gb", "microsoft surface rt 64gb", "surface rt 64 gb", "surface rt 64gb", "surface rt", 0};
@@ -76,6 +74,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QString samgalkw[] = {"Galaxy S IV", "galaxy s 4", "s iv", "galaxy s4", "galaxy s", 0};
     parser->addProduct(samsung_galaxy_s_iv, "Samsung Galaxy S IV", Product::MobilePhone, samgalkw);
+
+    net->setToken(token);
+
+    net->addGetGraphJob("&fields=posts.fields(likes.limit(999),comments.limit(999),message)", "expertnorge");
+    net->addGetGraphJob("&fields=posts.fields(likes.limit(999),comments.limit(999),message)", "elkjop");
 
     //Listen to changes in people
     connect(parser, SIGNAL(newPersonAdded(Person*)), this, SLOT(onPeopleAdded(Person*)) );
@@ -100,7 +103,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setupProductsTree();
 
-
     //net->addGetGraphJob("&fields=posts", "expertnorge");
 
     //net->addGetFacebookAboutPersonPage("birgitte.haavardsholm");
@@ -114,14 +116,14 @@ MainWindow::MainWindow(QWidget *parent) :
     //    cf.addToTable(male,ipad_mini);
     //    cf.addToTable(age30_40,microsoft_surface_rt_64_gb);
 
-
     //    cf.generateRandomData();
 
     //    cf.makeCalculations();
 
     //    cf.writeToDebug();
 
-    QFile file("/home/aleksander/testdata.txt");
+    QFile file("/home/aleksander/alldata.txt");
+
     file.open(QIODevice::ReadOnly | QIODevice::Text);
 
     QTextStream in(&file);
@@ -134,31 +136,51 @@ MainWindow::MainWindow(QWidget *parent) :
         for(int i = 0; i < fields.count(); i++)
         {
             if(counter < 28)
-            cf.setTrainData(counter,i,fields[i].toInt());
+                cf.setTestData(counter,i,fields[i].toInt());
         }
         counter++;
     }
 
     file.close();
 
-    QFile file2("/home/aleksander/traindata.txt");
-    file2.open(QIODevice::ReadOnly | QIODevice::Text);
-    QTextStream in2(&file2);
+//    QFile file("/home/aleksander/testdata.txt");
+//    file.open(QIODevice::ReadOnly | QIODevice::Text);
 
-    int counter2 = 0;
+//    QTextStream in(&file);
 
-    while(!in2.atEnd()) {
-        QString line = in2.readLine();
-        QList<QString> fields = line.split(":");
-        for(int i = 0; i < fields.count(); i++)
-        {
-            if(counter2 < 28)
-            cf.setTestData(counter2,i,fields[i].toInt());
-        }
-        counter2++;
-    }
+//    int counter = 0;
 
-    file2.close();
+//    while(!in.atEnd()) {
+//        QString line = in.readLine();
+//        QList<QString> fields = line.split(":");
+//        for(int i = 0; i < fields.count(); i++)
+//        {
+//            if(counter < 28)
+//                cf.setTrainData(counter,i,fields[i].toInt());
+//        }
+//        counter++;
+//    }
+
+//    file.close();
+
+//    QFile file2("/home/aleksander/traindata.txt");
+//    file2.open(QIODevice::ReadOnly | QIODevice::Text);
+//    QTextStream in2(&file2);
+
+//    int counter2 = 0;
+
+//    while(!in2.atEnd()) {
+//        QString line = in2.readLine();
+//        QList<QString> fields = line.split(":");
+//        for(int i = 0; i < fields.count(); i++)
+//        {
+//            if(counter2 < 28)
+//                cf.setTestData(counter2,i,fields[i].toInt());
+//        }
+//        counter2++;
+//    }
+
+//    file2.close();
 
     cf.makeCalculations();
     cf.predictNewTable();
@@ -485,13 +507,13 @@ void MainWindow::on_UpdatePeople_clicked()
     cf.makeCalculations();
     cf.writeToDebug();
 
-    QFile file("/home/aleksander/traindata.txt");
+    QFile file("/home/aleksander/alldata.txt");
     file.open(QIODevice::WriteOnly | QIODevice::Text);
     QTextStream out(&file);
 
-    QFile file2("/home/aleksander/testdata.txt");
-    file2.open(QIODevice::WriteOnly | QIODevice::Text);
-    QTextStream out2(&file2);
+//    QFile file2("/home/aleksander/testdata.txt");
+//    file2.open(QIODevice::WriteOnly | QIODevice::Text);
+//    QTextStream out2(&file2);
 
 
     QList<QList<int> > testData = cf.getTestVotes();
@@ -501,22 +523,28 @@ void MainWindow::on_UpdatePeople_clicked()
     {
         for(int j = 0; j < testData[i].count(); j++)
         {
-            out << testData[i][j] << ":";
+            if(j < testData[i].count()-1)
+                out << (testData[i][j] + trainData[i][j]) << ":";
+            else
+                out << (testData[i][j] + trainData[i][j]);
         }
         out << "\n";
     }
 
-    for(int i = 0; i < trainData.count(); i++)
-    {
-        for(int j = 0; j < trainData[i].count(); j++)
-        {
-            out2 << trainData[i][j] << ":";
-        }
-        out2 << "\n";
-    }
+//    for(int i = 0; i < trainData.count(); i++)
+//    {
+//        for(int j = 0; j < trainData[i].count(); j++)
+//        {
+//            if(j < testData[i],count()-1)
+//                out2 << testData[i][j] << ":";
+//            else
+//                out2 << testData[i][j];
+//        }
+//        out2 << "\n";
+//    }
 
     file.close();
-    file2.close();
+//    file2.close();
 
     QStandardItemModel *model = new QStandardItemModel(cf.getnrGroupsValue(),cf.getnrProductsValue(),this);
 
