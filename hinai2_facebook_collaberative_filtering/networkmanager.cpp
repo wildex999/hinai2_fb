@@ -16,6 +16,7 @@ NetworkManager::NetworkManager(QMainWindow* window, FBGraph_Parser* parser)
     nam = new QNetworkAccessManager(window);
     this->parser = parser;
     connect(nam,SIGNAL(finished(QNetworkReply*)),this,SLOT(onReply(QNetworkReply*)));
+    recCount = 0;
 
     initiateFacebookCookies();
 }
@@ -29,17 +30,20 @@ void NetworkManager::addGetGraphJob(QString query, QString store)
 {
     QString requestUrl = "https://graph.facebook.com/" + store + "?access_token=";
     nam->get(QNetworkRequest(QUrl(requestUrl + token + query)));
+    recCount++;
 }
 
 void NetworkManager::addGetPageJob(QString url)
 {
   nam->get(QNetworkRequest(QUrl(url)));
+  recCount++;
 }
 
 void NetworkManager::addGetFacebookGraphPerson(QString id)
 {
     QString requestUrl = "https://graph.facebook.com/" + id + "?access_token=";
     nam->get(QNetworkRequest(QUrl(requestUrl + token)));
+    recCount++;
 }
 
 void NetworkManager::addGetFacebookAboutPersonPage(QString fbUsername)
@@ -53,6 +57,7 @@ void NetworkManager::addGetJob(QString url)
     url = url.replace("%28", "(");
     url = url.replace("%29", ")");
     nam->get(QNetworkRequest(QUrl(url)));
+    recCount++;
 }
 
 void NetworkManager::setToken(QString token)
@@ -99,7 +104,7 @@ void NetworkManager::initiateFacebookCookies()
 
 void NetworkManager::onReply(QNetworkReply *reply)
 {
-    reply->close();
+    recCount--;
     if(reply->error() == QNetworkReply::NoError)
     {
         //Send raw data to parser
@@ -134,4 +139,10 @@ void NetworkManager::onReply(QNetworkReply *reply)
         qDebug() << "Body: " << reply->readAll();
         QMessageBox::warning(0, "Error getting network data!", reply->errorString());
     }
+
+    //Check if this was the last request
+    if(recCount < 0)
+        qDebug() << "ERROR: reCount < 0?????????";
+    if(recCount == 0)
+        parser->markNetComplete();
 }

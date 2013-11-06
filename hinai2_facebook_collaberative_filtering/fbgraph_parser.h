@@ -17,6 +17,8 @@ class FBGraph_Parser : public QObject
 {
     Q_OBJECT
 
+    friend class NetworkManager; //Cheap hack
+
 public:
     FBGraph_Parser(LocationTable* locationTable);
     ~FBGraph_Parser();
@@ -43,6 +45,7 @@ public:
 
     //Add person and parse further data
     Person* addPerson(QString id, QString name);
+    void getPersonExtended(Person* person); //Get extended information(Gender etc.) for person
 
     //Get a hash map of People
     QHash<QString, Person*>& getPeople();
@@ -53,8 +56,10 @@ public:
     QString currentShop;
 
 signals:
-    void newPersonAdded(Person* person); //Emitted after stage 2 of adding a person
+    void newPersonAdded(Person* person); //Emitted when a new person is found
+    void relevantPersonUpdate(Person* person); //Emitted when a person is added as relevant(Can emit multiple times per person)
     void newPostAdded(Post* post); //Emitted after comments and likes have been parsed
+    void doneParsing(); //Emitted when there are no more outstanding network requests
 
 protected:
     //Find keywords from all products in message
@@ -63,6 +68,8 @@ protected:
 
     //Find keywords from product in message
     bool findProductKeywords(Product* product, QString message);
+
+    void markNetComplete(); //Called by NetworkManager when there are no more outstanding requests
 
     QHash<QString, Person*> people;
     QHash<PRODUCT, Product*> products;

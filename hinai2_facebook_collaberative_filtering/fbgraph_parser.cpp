@@ -259,6 +259,9 @@ bool FBGraph_Parser::parseComments(Post* post, QVariantMap &comments)
         QVariantMap from = comment["from"].toMap();
         Person* person = this->parsePerson1(from);
 
+        if(newcomment->relevant)
+            getPersonExtended(person);
+
         person->addComment(newcomment);
         newcomment->setPoster(person);
     }
@@ -275,6 +278,10 @@ bool FBGraph_Parser::parseLikes(Post* post, QVariantMap &data)
 
         //Get the person using the id
         Person* person = addPerson(id, name);
+
+        //If the post is relevant, get extra info from person, like gender
+        if(post->relevant)
+            getPersonExtended(person);
 
         //TODO: Check if like already exists
         Like* newlike = new Like(post, person);
@@ -339,10 +346,10 @@ bool FBGraph_Parser::parsePerson2(QVariantMap& data)
     person->setArea(area);
     person->setAge(age);
 
-    //Emit that we are done parsing this person
-    emit newPersonAdded(person);
+    //Emit that we are fully done parsing this person
+    emit relevantPersonUpdate(person);
 
-    //qDebug() << "Parse person 2:" << username << "Addr:" << person->getRegion() << person->getArea() << "Age:" << person->getAge();
+    qDebug() << "Parse person 2:" << username << "Addr:" << person->getRegion() << person->getArea() << "Age:" << person->getAge();
 }
 
 Product* FBGraph_Parser::addProduct(PRODUCT product, QString name, Product::ProductType type, QString keywords[])
@@ -381,14 +388,28 @@ Person* FBGraph_Parser::addPerson(QString id, QString name)
         people[id] = person;
 
         //qDebug() << "Added person: " << name;
-
-        //Send GET request for more info from FB Graph API
-        networkmanager->addGetFacebookGraphPerson(id);
     }
     else
         person = *personiter;
 
+    //Emit that we have got a new person
+    emit newPersonAdded(person);
+
     return person;
+}
+
+void FBGraph_Parser::getPersonExtended(Person *person)
+{
+    if(person == NULL)
+    {
+        qDebug() << "ERROR: Got null person";
+        return;
+    }
+
+    person->gotExtendedInfo = true; //Mark that we don't need to do this again
+
+    //Send GET request for more info from FB Graph API
+    networkmanager->addGetFacebookGraphPerson(person->getId());
 }
 
 QHash<QString, Person *> &FBGraph_Parser::getPeople()
@@ -408,4 +429,10 @@ bool FBGraph_Parser::parseLocations(const QByteArray &rawdata)
 
 
   return true;
+}
+
+void FBGraph_Parser::markNetComplete()
+{
+    qDebug() << "DONE PARSING!";
+    emit doneParsing();
 }

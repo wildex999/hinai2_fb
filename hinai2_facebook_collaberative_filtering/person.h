@@ -51,6 +51,10 @@ public:
     QString getArea() const { return area_; }
     ushort getAge() const { return age_; }
     QList<Like*> getLikes() const { return likes;}
+    QHash<QString, Comment*> getComments() const { return comments; }
+
+
+    bool gotExtendedInfo;
 
 protected:
     QString id;
@@ -64,7 +68,6 @@ protected:
     QHash<PRODUCT, Product*> products;
     QHash<QString, Comment*> comments;
     QList<Like*> likes;
-
     int                     age;
     QString                 place;
 
