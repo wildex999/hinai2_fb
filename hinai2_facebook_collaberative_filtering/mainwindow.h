@@ -45,6 +45,8 @@ private slots:
     void onNewPageParsing();
     void onDoneParsing();
 
+    void updateStatusBar();
+
 private:
     Ui::MainWindow *ui;
     CollaberativeFiltering cf;
@@ -71,7 +73,6 @@ private:
     void            addPersonWithProducts(Person person, bool train);
 
     void            setupProductsTree();
-    void            updateStatusBar();
 };
 
 #endif // MAINWINDOW_H

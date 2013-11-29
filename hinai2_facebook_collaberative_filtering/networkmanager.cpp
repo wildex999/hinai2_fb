@@ -111,7 +111,7 @@ void NetworkManager::onReply(QNetworkReply *reply)
         QByteArray rawdata = reply->readAll();
         QUrl url =  reply->url();
 
-        if(url.encodedHost().contains("graph.facebook.com"))
+        if(url.host().contains("graph.facebook.com"))
         {
             QString path = url.path().remove(0,1);//Remove the '/'
 
@@ -124,9 +124,9 @@ void NetworkManager::onReply(QNetworkReply *reply)
             parser->currentShop = path;
             parser->parse(rawdata);
         }
-        else if(url.encodedHost().contains("www.facebook.com"))
+        else if(url.host().contains("www.facebook.com"))
           parser->parsePerson3(rawdata);
-        else if(url.encodedHost().contains("no.wikipedia.org"))
+        else if(url.host().contains("no.wikipedia.org"))
         {
           parser->parseLocations(rawdata);
         }

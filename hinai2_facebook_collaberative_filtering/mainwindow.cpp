@@ -4,6 +4,7 @@
 
 #include <QTableView>
 #include <QFile>
+#include <QTimer>
 #include "networkmanager.h"
 #include "collaberativefiltering.h"
 #include "fbgraph_parser.h"
@@ -33,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // pointer such that it can be passed around. Should be C++11 shared pointer, but neglected for simplicity.
 
-    locationTable = new LocationTable(Util::ExtractLocationsFromCVSFile("Fylke_og_kommuneoversikt.csv"));
+    locationTable = new LocationTable(Util::ExtractLocationsFromCVSFile("../Data/Fylke_og_kommuneoversikt.csv"));
     QString token;
     token = Util::ExtractTokenFromFile("token.txt");
 
@@ -77,8 +78,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     net->setToken(token);
 
-    net->addGetGraphJob("&fields=posts.fields(likes.limit(999),comments.limit(999),message)", "expertnorge");
-    net->addGetGraphJob("&fields=posts.fields(likes.limit(999),comments.limit(999),message)", "elkjop");
+    //net->addGetGraphJob("&fields=posts.fields(likes.limit(999),comments.limit(999),message)", "expertnorge");
+    //net->addGetGraphJob("&fields=posts.fields(likes.limit(999),comments.limit(999),message)", "elkjop");
 
     //Listen to changes in people
     connect(parser, SIGNAL(newPersonAdded(Person*)), this, SLOT(onPeopleAdded(Person*)) );
@@ -88,6 +89,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(parser, SIGNAL(newLikeAdded(Like*)), this, SLOT(onLikeAdded(Like*)) );
     connect(parser, SIGNAL(newPageParsing()), this, SLOT(onNewPageParsing()) );
     connect(parser, SIGNAL(doneParsing()), this, SLOT(onDoneParsing()) );
+
+    //Set-up automatic update of StatusBar(Update on data change was very expensive and caused freezes)
+    QTimer *statusTimer = new QTimer(this);
+    connect(statusTimer, SIGNAL(timeout()), this, SLOT(updateStatusBar()));
+    statusTimer->start(500);
 
     statusParsing = true;
     statusPeopleCount = 0;
@@ -219,19 +225,16 @@ MainWindow::~MainWindow()
 void MainWindow::onPeopleAdded(Person* person)
 {
     statusPeopleCount++;
-    updateStatusBar();
 }
 
 void MainWindow::onPeopleUpdated(Person* person)
 {
     statusRelevantPeopleCount++;
-    updateStatusBar();
 }
 
 void MainWindow::onNewPageParsing()
 {
     statusPagesCount++;
-    updateStatusBar();
 }
 
 void MainWindow::onPostAdded(Post *post)
@@ -248,7 +251,6 @@ void MainWindow::onPostAdded(Post *post)
         product->postsCount++;
         product->getItem()->child(0)->setText("Posts(" + QString::number(product->postsCount) + ")");
     }
-    updateStatusBar();
 }
 
 void MainWindow::onCommentAdded(Comment *comment)
@@ -265,7 +267,6 @@ void MainWindow::onCommentAdded(Comment *comment)
         product->getItem()->child(1)->setText("Comments(" + QString::number(product->commentsCount) + ")");
     }
 
-    updateStatusBar();
 }
 
 void MainWindow::onLikeAdded(Like *like)
@@ -282,13 +283,11 @@ void MainWindow::onLikeAdded(Like *like)
         product->getItem()->child(2)->setText("Likes(" + QString::number(product->likesCount) + ")");
     }
 
-    updateStatusBar();
 }
 
 void MainWindow::onDoneParsing()
 {
     statusParsing = false;
-    updateStatusBar();
 }
 
 void MainWindow::updateStatusBar()

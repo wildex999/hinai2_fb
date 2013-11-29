@@ -38,4 +38,4 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui
 
-LIBS += -lqjson
+LIBS += -L"$$PWD/../lib" -lqjson

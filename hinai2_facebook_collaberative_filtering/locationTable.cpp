@@ -28,7 +28,8 @@ QList<QString> LocationTable::getRegionList() const
 // Returns a random region from the list.
 QString LocationTable::getRandomRegion() const
 {
-  return locations_.keys().at(rand() % locations_.keys().size());
+    int random = rand();
+  return locations_.keys().at(random % locations_.keys().size());
 }
 
 // Returns a random area from a valid region.

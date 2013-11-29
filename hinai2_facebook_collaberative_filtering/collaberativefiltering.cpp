@@ -1,6 +1,7 @@
 #include "collaberativefiltering.h"
 #include <QDebug>
 #include <cmath>
+#include <time.h>
 
 CollaberativeFiltering::CollaberativeFiltering()
 {
